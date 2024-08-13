@@ -8,6 +8,8 @@ from pyDOE2 import lhs
 from scipy.stats.qmc import Sobol
 from sklearn.utils import resample
 
+from amlro.optimizer import optimizer
+
 
 def validate_config(config: Dict) -> None:
     """Validates the configuration dictionary for generating grids.
@@ -70,7 +72,9 @@ def get_reaction_scope(
     :rtype: pd.DataFrame
     """
 
-    reaction_conditions_df = generate_reaction_grid(config)
+    reaction_conditions_df, reaction_conditions_encoded_df = (
+        generate_reaction_grid(config)
+    )
 
     if sampling == "random":
         training_conditions_df = random_sampling(
@@ -85,10 +89,17 @@ def get_reaction_scope(
 
     if write_files:
         writting_reaction_scope(
-            reaction_conditions_df, training_conditions_df, exp_dir
+            reaction_conditions_df,
+            reaction_conditions_encoded_df,
+            training_conditions_df,
+            exp_dir,
         )
 
-    return reaction_conditions_df, training_conditions_df
+    return (
+        reaction_conditions_df,
+        reaction_conditions_encoded_df,
+        training_conditions_df,
+    )
 
 
 def generate_reaction_grid(config: Dict) -> pd.DataFrame:
@@ -124,7 +135,15 @@ def generate_reaction_grid(config: Dict) -> pd.DataFrame:
 
     df = pd.DataFrame(all_combinations, columns=feature_names)
 
-    return df
+    encoded_data = df.apply(
+        lambda row: optimizer.categorical_feature_encoding(
+            config, row.tolist()
+        ),
+        axis=1,
+    )
+    encoded_df = pd.DataFrame(encoded_data.tolist(), columns=df.columns)
+
+    return df, encoded_df
 
 
 def random_sampling(df: pd.DataFrame, training_size=20) -> pd.DataFrame:
@@ -256,7 +275,10 @@ def feature_scaling(samples: List[List], config: Dict) -> pd.DataFrame:
 
 
 def writting_reaction_scope(
-    full_combo_df: pd.DataFrame, training_combo_df: pd.DataFrame, exp_dir: str
+    full_combo_df: pd.DataFrame,
+    full_combo_encoded_df: pd.DataFrame,
+    training_combo_df: pd.DataFrame,
+    exp_dir: str,
 ):
     """writting reaction scopes into files,
     full combo file - full reaction space and
@@ -265,6 +287,9 @@ def writting_reaction_scope(
 
     :param full_combo_df: full reaction space dataframe
     :type full_combo_df: pd.DataFrame
+    :param full_combo_encoded_df: full reaction space dataframe that
+    catogerical varible encoded into numerical
+    :type full_combo_encoded_df: pd.DataFrame
     :param training_combo_df: training reaction conditions dataframe
     :type training_combo_df: pd.DataFrame
     :param exp_dir: experimental directory for saving data files,
@@ -273,8 +298,19 @@ def writting_reaction_scope(
     if not os.path.exists(exp_dir):
         os.makedirs(exp_dir)
 
-    full_combo_path = os.path.join(exp_dir, "full_combo_file.txt")
+    full_combo_path = os.path.join(
+        exp_dir, "full_combo_file.txt"
+    )  # writting encoded version
+
+    full_combo_decoded_path = os.path.join(
+        exp_dir, "full_combo_decoded_file.txt"
+    )
+
     training_combo_path = os.path.join(exp_dir, "training_combo_file.txt")
 
-    full_combo_df.to_csv(full_combo_path, index=False)
+    full_combo_encoded_df.to_csv(full_combo_path, index=False)
+    # Decoded full combo file is writting if its smaller reaction space
+    if full_combo_df.shape[0] <= 20000:
+        full_combo_df.to_csv(full_combo_decoded_path, index=False)
+
     training_combo_df.to_csv(training_combo_path, index=False)
