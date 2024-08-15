@@ -7,7 +7,7 @@ from amlro import generate_reaction_conditions
 
 class TestGetCombos(unittest.TestCase):
 
-    def test_continous(self):
+    def test_continous_features(self):
         config = {
             "continuous": {
                 "bounds": [[0, 1], [0, 1]],
@@ -25,6 +25,7 @@ class TestGetCombos(unittest.TestCase):
         combos = pd.DataFrame(df).values.tolist()
 
         self.assertEqual(combos, corr)
+        pd.testing.assert_frame_equal(df, df_encoded)
 
     def test_categorical_features(self):
 
@@ -47,12 +48,21 @@ class TestGetCombos(unittest.TestCase):
             ["dog", "grey"],
         ]
 
+        corr_encoded = [
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [1, 1],
+        ]
+
         df, df_encoded = generate_reaction_conditions.generate_reaction_grid(
             config
         )
         combos = pd.DataFrame(df).values.tolist()
+        combos_encoded = pd.DataFrame(df_encoded).values.tolist()
 
         self.assertEqual(combos, corr)
+        self.assertEqual(combos_encoded, corr_encoded)
 
     def test_mixed_features(self):
         config = {
@@ -78,9 +88,22 @@ class TestGetCombos(unittest.TestCase):
             [1, "dog", "grey"],
         ]
 
+        corr_encoded = [
+            [0, 0, 0],
+            [0, 0, 1],
+            [0, 1, 0],
+            [0, 1, 1],
+            [1, 0, 0],
+            [1, 0, 1],
+            [1, 1, 0],
+            [1, 1, 1],
+        ]
+
         df, df_encoded = generate_reaction_conditions.generate_reaction_grid(
             config
         )
         combos = pd.DataFrame(df).values.tolist()
+        combos_encoded = pd.DataFrame(df_encoded).values.tolist()
 
         self.assertEqual(combos, corr)
+        self.assertEqual(combos_encoded, corr_encoded)
