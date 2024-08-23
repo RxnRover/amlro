@@ -23,6 +23,17 @@ def validate_config(config: Dict) -> None:
     :raises ValueError: At least one given resolution is invalid.
     """
 
+    # Check for inconsistent lengths
+    if len(config["continuous"]["bounds"]) != len(
+        config["continuous"]["resolutions"]
+    ):
+        msg = "Lengths of bounds and resolutions must match. "
+        msg += "Given bounds: {}, Given resolutions: {}".format(
+            len(config["continuous"]["bounds"]),
+            len(config["continuous"]["resolutions"]),
+        )
+        raise ValueError(msg)
+
     # Check for invalid bounds
     for bound in config["continuous"]["bounds"]:
         if bound[0] > bound[1]:
@@ -49,11 +60,10 @@ def get_reaction_scope(
     write_files: bool = False,
     exp_dir: str = None,
 ) -> pd.DataFrame:
-    """Generate the full reaction space and training
-    reaction conditions and if required it can called to write function
-    to generate full combo file and traning combo files.
-    User need to define parameter configurations, training sampling techniques
-    and traning set size.
+    """Generate the full reaction space and training reaction conditions.
+
+    If required  write function can be enabled to generate full combo file and
+    traning combo files.
 
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
@@ -88,7 +98,8 @@ def get_reaction_scope(
     elif sampling == "sobol":
         training_conditions_df = sobol_sequnce_sampling(config, training_size)
     else:
-        error = "chosse correct sampling method from [random,lhs,sobol]"
+        error = "Incorrect sampling method" + str(sampling) + " provided."
+        " Valid methods [random, lhs, sobol]"
         raise (ValueError(error))
 
     if write_files:
@@ -171,10 +182,11 @@ def writing_reaction_scope(
     training_combo_df: pd.DataFrame,
     exp_dir: str,
 ):
-    """writing reaction scopes into files,
-    full combo file (full reaction space) and
-    training combo file (sub sample of reaction conditions
-    to generate training  data file).
+    """writing reaction scopes into files
+
+    This code will generate following two files, full combo file (full reaction space)
+    and training combo file (sub sample of reaction conditions
+    to generate training  data file) in given experimental directory.
 
     :param full_combo_df: full reaction space dataframe
     :type full_combo_df: pd.DataFrame

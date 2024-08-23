@@ -7,9 +7,8 @@ from scipy.stats.qmc import Sobol
 from sklearn.utils import resample
 
 
-def random_sampling(df: pd.DataFrame, sample_size=20) -> pd.DataFrame:
-    """Generate subsample from full reaction space
-    using random sampling.
+def random_sampling(df: pd.DataFrame, sample_size: int = 20) -> pd.DataFrame:
+    """Generate subsample from full reaction space using random sampling.
 
     :param df: Dataframe with full reaction space
     :type df: pd.DataFrame
@@ -24,9 +23,10 @@ def random_sampling(df: pd.DataFrame, sample_size=20) -> pd.DataFrame:
     return sample_df
 
 
-def latin_hypercube_sampling(config, sample_size=20) -> pd.DataFrame:
-    """Generate subsample from full reaction space
-    using  latent hypercube sampling.
+def latin_hypercube_sampling(
+    config: Dict, sample_size: int = 20
+) -> pd.DataFrame:
+    """Generate subsample from full reaction space using  latent hypercube sampling.
 
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
@@ -51,9 +51,8 @@ def latin_hypercube_sampling(config, sample_size=20) -> pd.DataFrame:
     return training_df
 
 
-def sobol_sequnce_sampling(config, sample_size=20) -> pd.DataFrame:
-    """Generate subsample from full reaction space
-    using sobol sequnce sampling.
+def sobol_sequnce_sampling(config: Dict, sample_size: int = 20) -> pd.DataFrame:
+    """Generate subsample from full reaction space using sobol sequnce sampling.
 
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
