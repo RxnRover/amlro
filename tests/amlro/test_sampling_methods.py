@@ -35,6 +35,9 @@ class TestSamplingMethods(unittest.TestCase):
 
     def test_random_sampling(self):
 
+        # Test generating subsample from given reaction condition dataframe using
+        # random sampling method.
+
         sample_size = 10
         sampled_df = random_sampling(self.df, sample_size=sample_size)
 
@@ -47,6 +50,10 @@ class TestSamplingMethods(unittest.TestCase):
         )
 
     def test_latin_hypercube_sampling(self):
+
+        # Test generating subsample from given feature config dictionary using
+        # latin hypercube sampling method.
+
         sample_size = 10
         sampled_df = latin_hypercube_sampling(
             self.config, sample_size=sample_size
@@ -64,6 +71,10 @@ class TestSamplingMethods(unittest.TestCase):
         self.assertEqual(sampled_df.columns.to_list(), expected_columns)
 
     def test_sobol_sequnce_sampling(self):
+
+        # Test generating subsample from given feature config dictionary using
+        # Sobol sequnce sampling method.
+
         sample_size = 10
         sampled_df = sobol_sequnce_sampling(
             self.config, sample_size=sample_size
@@ -84,6 +95,10 @@ class TestSamplingMethods(unittest.TestCase):
 class TestFeatureScaling(unittest.TestCase):
 
     def test_continuous_only(self):
+
+        # Test feature scaling of given reaction condition sample from [0,1] to scale of
+        # given feature bounds using continous features only.
+
         samples = np.array([[0.1, 1.0], [0.5, 0.1]])
         config = {
             "continuous": {
@@ -101,6 +116,10 @@ class TestFeatureScaling(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_output)
 
     def test_categorical_only(self):
+
+        # Test feature scaling of given reaction condition sample from [0,1] to scale of
+        # given feature bounds using categorical features only.
+
         samples = np.array([[0.0], [0.25], [0.50], [0.75], [1.0]])
 
         config = {
@@ -121,6 +140,10 @@ class TestFeatureScaling(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_output)
 
     def test_mixed_data(self):
+
+        # Test feature scaling of given reaction condition sample from [0,1] to scale of
+        # given feature bounds using both continous and categorical  features.
+
         samples = np.array([[0.1, 0.25], [0.5, 0.75]])
         config = {
             "continuous": {

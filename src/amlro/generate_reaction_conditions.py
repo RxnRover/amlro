@@ -11,46 +11,7 @@ from amlro.sampling_methods import (
     random_sampling,
     sobol_sequnce_sampling,
 )
-
-
-def validate_config(config: Dict) -> None:
-    """Validates the configuration dictionary for generating grids.
-
-    :param config: Configuration to be checked
-    :type config: Dict
-
-    :raises ValueError: At least one given bound is invalid.
-    :raises ValueError: At least one given resolution is invalid.
-    """
-
-    # Check for inconsistent lengths
-    if len(config["continuous"]["bounds"]) != len(
-        config["continuous"]["resolutions"]
-    ):
-        msg = "Lengths of bounds and resolutions must match. "
-        msg += "Given bounds: {}, Given resolutions: {}".format(
-            len(config["continuous"]["bounds"]),
-            len(config["continuous"]["resolutions"]),
-        )
-        raise ValueError(msg)
-
-    # Check for invalid bounds
-    for bound in config["continuous"]["bounds"]:
-        if bound[0] > bound[1]:
-            msg = "Max bound must be greater than or equal to the min "
-            msg += "bound. Given bounds: Min = {}, Max = {}".format(
-                bound[0], bound[1]
-            )
-            raise (ValueError(msg))
-
-    # Check for invalid resolutions
-    for resolution in config["continuous"]["resolutions"]:
-        if resolution <= 0:
-            msg = "Resolutions must all be positive, nonzero values. "
-            msg += "Given resolutions: {}".format(
-                config["continuous"]["resolutions"]
-            )
-            raise (ValueError(msg))
+from amlro.validations import validate_reaction_scope_config
 
 
 def get_reaction_scope(
@@ -84,6 +45,7 @@ def get_reaction_scope(
     :rtype: pd.DataFrame
     :raises ValueError: incorrect sampling method.
     """
+    validate_reaction_scope_config(config)
 
     reaction_conditions_df, reaction_conditions_encoded_df = (
         generate_reaction_grid(config)
@@ -103,7 +65,7 @@ def get_reaction_scope(
         raise (ValueError(error))
 
     if write_files:
-        writing_reaction_scope(
+        write_reaction_scope(
             reaction_conditions_df,
             reaction_conditions_encoded_df,
             training_conditions_df,
@@ -141,7 +103,6 @@ def generate_reaction_grid(config: Dict) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
 
-    validate_config(config)
     feature_names = (
         config["continuous"]["feature_names"]
         + config["categorical"]["feature_names"]
@@ -176,13 +137,13 @@ def generate_reaction_grid(config: Dict) -> pd.DataFrame:
     return df, encoded_df
 
 
-def writing_reaction_scope(
+def write_reaction_scope(
     full_combo_df: pd.DataFrame,
     full_combo_encoded_df: pd.DataFrame,
     training_combo_df: pd.DataFrame,
     exp_dir: str,
 ):
-    """writing reaction scopes into files
+    """write reaction scopes into files
 
     This code will generate following two files, full combo file (full reaction space)
     and training combo file (sub sample of reaction conditions
@@ -201,11 +162,9 @@ def writing_reaction_scope(
     if not os.path.exists(exp_dir):
         os.makedirs(exp_dir)
 
-    full_combo_path = os.path.join(exp_dir, "full_combo_file.txt")
-    full_combo_decoded_path = os.path.join(
-        exp_dir, "full_combo_decoded_file.txt"
-    )
-    training_combo_path = os.path.join(exp_dir, "training_combo_file.txt")
+    full_combo_path = os.path.join(exp_dir, "full_combo.csv")
+    full_combo_decoded_path = os.path.join(exp_dir, "full_combo_decoded.csv")
+    training_combo_path = os.path.join(exp_dir, "training_combo.csv")
 
     full_combo_encoded_df.to_csv(full_combo_path, index=False)
     # Decoded full combo file is writing if its

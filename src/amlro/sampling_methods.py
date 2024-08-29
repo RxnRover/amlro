@@ -52,7 +52,7 @@ def latin_hypercube_sampling(
 
 
 def sobol_sequnce_sampling(config: Dict, sample_size: int = 20) -> pd.DataFrame:
-    """Generate subsample from full reaction space using sobol sequnce sampling.
+    """Generate subsample from full reaction space using Sobol sequnce sampling.
 
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict

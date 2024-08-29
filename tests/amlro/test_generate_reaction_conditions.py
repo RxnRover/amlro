@@ -31,7 +31,9 @@ class TestGetReactionScope(unittest.TestCase):
 
     def test_get_reaction_scope_random(self):
 
-        # Test the full reaction scope with random sampling
+        # Test generating the full reaction scope and generating training reaction
+        # conditions with random sampling. Here we are testing length of the
+        # dataframes and column names.
         (
             reaction_conditions_df,
             reaction_conditions_encoded_df,
@@ -40,7 +42,7 @@ class TestGetReactionScope(unittest.TestCase):
             self.config, sampling="random", training_size=2
         )
 
-        # Check the full reaction space
+        # Check that the generated reaction space is the correct full reaction space
         pd.testing.assert_frame_equal(
             reaction_conditions_df,
             self.expected_full_reaction_scope,
@@ -57,7 +59,9 @@ class TestGetReactionScope(unittest.TestCase):
 
     def test_get_reaction_scope_lhs(self):
 
-        # Test the full reaction scope with Latin Hypercube Sampling
+        # Test generating the full reaction scope and generating training reaction
+        # conditions with laten hypercube sampling. Here we are testing length of
+        # the dataframes and column names.
         (
             reaction_conditions_df,
             reaction_conditions_encoded_df,
@@ -66,7 +70,7 @@ class TestGetReactionScope(unittest.TestCase):
             self.config, sampling="lhs", training_size=2
         )
 
-        # Check the full reaction space
+        # Check that the generated reaction space is the correct full reaction space
         pd.testing.assert_frame_equal(
             reaction_conditions_df,
             self.expected_full_reaction_scope,
@@ -83,7 +87,9 @@ class TestGetReactionScope(unittest.TestCase):
 
     def test_get_reaction_scope_sobol(self):
 
-        # Test the full reaction scope with Sobol Sampling
+        # Test generating the full reaction scope and generating training reaction
+        # conditions with Sobol sequnce sampling. Here we are testing length of
+        # the dataframes and column names.
         (
             reaction_conditions_df,
             reaction_conditions_encoded_df,
@@ -92,7 +98,7 @@ class TestGetReactionScope(unittest.TestCase):
             self.config, sampling="sobol", training_size=2
         )
 
-        # Check the full reaction space
+        # Check that the generated reaction space is the correct full reaction space
         pd.testing.assert_frame_equal(
             reaction_conditions_df,
             self.expected_full_reaction_scope,
@@ -121,6 +127,9 @@ class TestGetReactionScope(unittest.TestCase):
 class TestGenerateReactionGrid(unittest.TestCase):
 
     def test_continous_features(self):
+
+        # Test generating reaction grid using continous features only.
+        # Both generated encoded and decoded reaction grid dataframes were tested here.
         config = {
             "continuous": {
                 "bounds": [[0, 1], [0, 1]],
@@ -137,11 +146,14 @@ class TestGenerateReactionGrid(unittest.TestCase):
         )
         combos = pd.DataFrame(df).values.tolist()
 
+        # Check that the generated reaction space is the correct full reaction space
         self.assertEqual(combos, corr)
         pd.testing.assert_frame_equal(df, df_encoded)
 
     def test_categorical_features(self):
 
+        # Test generating reaction grid using categorical features only.
+        # Both generated encoded and decoded reaction grid dataframes were tested here.
         config = {
             "continuous": {
                 "bounds": [],
@@ -174,10 +186,14 @@ class TestGenerateReactionGrid(unittest.TestCase):
         combos = pd.DataFrame(df).values.tolist()
         combos_encoded = pd.DataFrame(df_encoded).values.tolist()
 
+        # Check that the generated reaction space is the correct full reaction space
         self.assertEqual(combos, corr)
         self.assertEqual(combos_encoded, corr_encoded)
 
     def test_mixed_features(self):
+
+        # Test generating reaction grid using both continous and categoriucal features.
+        # Both generated encoded and decoded reaction grid dataframes were tested here.
         config = {
             "continuous": {
                 "bounds": [[0, 1]],
@@ -218,70 +234,6 @@ class TestGenerateReactionGrid(unittest.TestCase):
         combos = pd.DataFrame(df).values.tolist()
         combos_encoded = pd.DataFrame(df_encoded).values.tolist()
 
+        # Check that the generated reaction space is the correct full reaction space
         self.assertEqual(combos, corr)
         self.assertEqual(combos_encoded, corr_encoded)
-
-
-class TestValidateConfig(unittest.TestCase):
-
-    def test_valid_config(self):
-
-        config = {
-            "continuous": {
-                "bounds": [(0, 10), (5, 15)],
-                "resolutions": [0.1, 1.0],
-            }
-        }
-        # Should not raise any exception
-        generate_reaction_conditions.validate_config(config)
-
-    def test_invalid_bounds(self):
-
-        # Test with invalid bounds where min > max.
-        config = {
-            "continuous": {
-                "bounds": [(10, 5), (5, 15)],
-                "resolutions": [0.1, 1.0],
-            }
-        }
-        with self.assertRaises(ValueError) as context:
-            generate_reaction_conditions.validate_config(config)
-
-        expected_msg = (
-            "Max bound must be greater than or equal to the min bound"
-        )
-
-        self.assertIn(expected_msg, str(context.exception))
-
-    def test_invalid_resolutions(self):
-
-        # Test with invalid resolution (non-positive values).
-        config = {
-            "continuous": {
-                "bounds": [(0, 10), (5, 15)],
-                "resolutions": [-0.1, 0],  # Invalid resolutions
-            }
-        }
-        with self.assertRaises(ValueError) as context:
-            generate_reaction_conditions.validate_config(config)
-
-        expected_msg = "Resolutions must all be positive, nonzero values"
-        self.assertIn(expected_msg, str(context.exception))
-
-    def test_inconsistent_lengths(self):
-
-        # Test with inconsistent lengths of bounds and resolutions.
-        # one bound and two resolutions, inconsistent length
-        config = {
-            "continuous": {"bounds": [(0, 10)], "resolutions": [0.1, 1.0]}
-        }
-        with self.assertRaises(ValueError) as context:
-            generate_reaction_conditions.validate_config(config)
-
-        expected_msg = "Lengths of bounds and resolutions must match"
-
-        self.assertIn(expected_msg, str(context.exception))
-
-
-if __name__ == "__main__":
-    unittest.main()
