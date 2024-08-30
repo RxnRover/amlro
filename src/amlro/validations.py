@@ -25,6 +25,24 @@ def validate_reaction_scope_config(config: Dict) -> None:
         )
         raise ValueError(msg)
 
+    # Check for invalid bounds
+    for bound in config["continuous"]["bounds"]:
+        if bound[0] > bound[1]:
+            msg = "Max bound must be greater than or equal to the min "
+            msg += "bound. Given bounds: Min = {}, Max = {}".format(
+                bound[0], bound[1]
+            )
+            raise (ValueError(msg))
+
+    # Check for invalid resolutions
+    for resolution in config["continuous"]["resolutions"]:
+        if resolution <= 0:
+            msg = "Resolutions must all be positive, nonzero values. "
+            msg += "Given resolutions: {}".format(
+                config["continuous"]["resolutions"]
+            )
+            raise (ValueError(msg))
+
     # Check if categorical values are lists of lists
     if not all(
         isinstance(values, list) for values in config["categorical"]["values"]
@@ -43,21 +61,3 @@ def validate_reaction_scope_config(config: Dict) -> None:
             len(config["categorical"]["values"]),
         )
         raise ValueError(msg)
-
-    # Check for invalid bounds
-    for bound in config["continuous"]["bounds"]:
-        if bound[0] > bound[1]:
-            msg = "Max bound must be greater than or equal to the min "
-            msg += "bound. Given bounds: Min = {}, Max = {}".format(
-                bound[0], bound[1]
-            )
-            raise (ValueError(msg))
-
-    # Check for invalid resolutions
-    for resolution in config["continuous"]["resolutions"]:
-        if resolution <= 0:
-            msg = "Resolutions must all be positive, nonzero values. "
-            msg += "Given resolutions: {}".format(
-                config["continuous"]["resolutions"]
-            )
-            raise (ValueError(msg))

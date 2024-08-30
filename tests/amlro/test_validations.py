@@ -62,7 +62,7 @@ class TestValidateReactionScopeConfig(unittest.TestCase):
         expected_msg = "Resolutions must all be positive, nonzero values"
         self.assertIn(expected_msg, str(context.exception))
 
-    def test_inconsistent_lengths_resoultions(self):
+    def test_inconsistent_lengths_resolutions(self):
 
         # Test with inconsistent lengths of resolutions.
         # one bound and feature names, and two resolutions, inconsistent length
@@ -106,9 +106,9 @@ class TestValidateReactionScopeConfig(unittest.TestCase):
 
         self.assertIn(expected_msg, str(context.exception))
 
-    def test_inconsistent_lengths_continous_feature_names(self):
+    def test_inconsistent_lengths_continuous_feature_names(self):
 
-        # Test with inconsistent lengths of continous feature names.
+        # Test with inconsistent lengths of continuous feature names.
         # one bound and resoultion, and two feature names, inconsistent length
         config = {
             "continuous": {
@@ -155,8 +155,9 @@ class TestValidateReactionScopeConfig(unittest.TestCase):
 
     def test_type_categorical_values(self):
 
-        # Test case for  categorical values key has values of  list of lists.
-        # values list with strings not list of strings
+        # Categorical values key should have values that are list of lists.
+        # This ensures an exception is thrown when that is not the case by providing
+        # a list of strings
         config = {
             "continuous": {
                 "bounds": [(0, 10)],
