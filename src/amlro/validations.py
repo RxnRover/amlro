@@ -2,7 +2,7 @@ from typing import Dict
 
 
 def validate_reaction_scope_config(config: Dict) -> None:
-    """Validates the configuration dictionary for generating grids.
+    """Validates the part of the configuration dictionary for generating grids.
 
     :param config: Configuration to be checked
     :type config: Dict
