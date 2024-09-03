@@ -39,7 +39,7 @@ def get_reaction_scope(
     :type write_files: bool, optional
     :param exp_dir: experimental directory for saving data files,
                     defaults to None
-    :type exp_dir: _type_, optional
+    :type exp_dir: str, optional
     :return: returning two dataframes with full reaction space
              and training conditions
     :rtype: pd.DataFrame
