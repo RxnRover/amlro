@@ -9,37 +9,34 @@ from amlro.optimizer import optimizer
 def generate_training_data(
     exp_dir: str,
     config: Dict,
-    parameters=[],
-    obj_values=[],
-    itr=0,
-    termination=False,
+    parameters: List = [],
+    obj_values: List = [],
+    itr: int = 0,
+    termination: bool = False,
 ) -> List[float]:
-    """Generating traning dataset for the ML model.
+    """Generates a training dataset for the ML model.
 
-    Reading the reaction parameters from tranining combination file
-    and return next reaction parameter combination. After the first experiment, previous
-    parameter set and experimental yield are writing to the training set file. When the
-    termination True this function only writes last training line to the
-    datafile without returning next reaction condtions to try.
+    This function handles the generation of training data for the optimization
+    process involving experimental reactions. The function is designed to work
+    iteratively,where each iteration represents a new training reaction.
+    Depending on the iteration number (`itr`) and the termination flag,
+    it writes the experimental data to files and provides the
+    next set of reaction conditions.
 
-    :param training_dataset_path: Path to the traning dataset file.
-    :type training_dataset_path: str
-    :param training_dataset_decoded_path: file path to the training set file with
-                                          categorical feature names.
-    :type training_dataset_path: str
-    :param training_combo_path: path to the traning combination file.
-    :type training_combo_path: str
-    :param config: Initial reaction feature configurations
+    :param exp_dir: experimental directory for saving data files,
+                    defaults to None
+    :type exp_dir: str, optional
+    :param config: Dictionary of parameters
     :type config: Dict
     :param parameters: parameter set from previous experiment or initial parameters,
-     defaults to [].
+                       defaults to [].
     :type parameters: List, optional
     :param obj_values: experimental yield from previous experiment.
     :type obj_values: List, optional
     :param itr: Experiment iteration, starting from 0, defaults to 0.
     :type itr: int, optional
     :param termination: termination of the training function after last iteration
-    without returning next reaction conditions, defaults to False
+                        without returning next reaction conditions, defaults to False
     :type termination: bool, optional
     :return: parameter set for next experiment.
     :rtype: List
@@ -64,8 +61,8 @@ def generate_training_data(
         + ","
         + ",".join([str(obj_val) for obj_val in obj_values])
     )
-    if itr == 0:
 
+    if itr == 0:
         continous_names = config["continuous"]["feature_names"]
         cat_names = config["categorical"]["feature_names"]
         obj_names = config["objectives"]
@@ -77,7 +74,6 @@ def generate_training_data(
         write_data_to_training(training_dataset_decoded_path, col_names)
 
     if itr != 0:
-
         write_data_to_training(training_dataset_path, prev_parameters_encoded)
         write_data_to_training(training_dataset_decoded_path, prev_parameters)
         print("writing data to training dataset files...")
@@ -88,6 +84,7 @@ def generate_training_data(
         # should activated in last iteration+1
         print("Training set generation completed..")
         return
+
     data = load_training_combo_file(training_combo_path)
 
     # data_decoded = optimizer.categorical_feature_decoding(config, data[itr])
@@ -97,8 +94,10 @@ def generate_training_data(
 
 
 def load_training_combo_file(training_combo: str) -> List[float]:
-    """loading the training combination file as pandas data frame and
-    return combination data as list.
+    """Loads the training data.
+
+    Reads the combination file as pandas data frame and return the
+    reaction combination data as list.
 
     :param training_combo: training parameter combination file path
     :type training_combo: str
@@ -106,11 +105,12 @@ def load_training_combo_file(training_combo: str) -> List[float]:
     :rtype: List[float]
     """
     data = pd.read_csv(training_combo, skiprows=0)
+
     return data.values.tolist()
 
 
 def writing_training_file(exp_dir: str, objectives: List[List], config: Dict):
-    """writing the experiment data.
+    """writes the experiment data.
 
     writing results when batch of training experiments results/objectives collected.
 
@@ -144,17 +144,20 @@ def writing_training_file(exp_dir: str, objectives: List[List], config: Dict):
     training_dataset_decoded_path = os.path.join(
         exp_dir, "reactions_decoded.csv"
     )
+    # file writing
     training_encoded_df.to_csv(training_dataset_path, index=False)
     training_df.to_csv(training_dataset_decoded_path, index=False)
 
 
 def write_data_to_training(training_file: str, prev_parameters: str) -> None:
-    """writing the prev best predicted combination and
-    experimental yield at the end of the training set file.
+    """writes the reaction data
+
+    Writes the prev reaction conditions and experimental objective values
+    at the end of the training data file.
 
     :param training_file: traning set file path
     :type training_file: str
-    :param prev_parameters: previous best combo and yield
+    :param prev_parameters: previous reaction conditions and objective values
     :type prev_parameters: str
     """
     # Open the file in append & read mode ('a+')
