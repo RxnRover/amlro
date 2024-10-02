@@ -5,6 +5,11 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
+from amlro.const import (
+    FULL_COMBO_DECODED_FILENAME,
+    FULL_COMBO_FILENAME,
+    TRAINING_COMBO_FILENAME,
+)
 from amlro.optimizer import optimizer
 from amlro.sampling_methods import (
     latin_hypercube_sampling,
@@ -162,9 +167,9 @@ def write_reaction_scope(
     if not os.path.exists(exp_dir):
         os.makedirs(exp_dir)
 
-    full_combo_path = os.path.join(exp_dir, "full_combo.csv")
-    full_combo_decoded_path = os.path.join(exp_dir, "full_combo_decoded.csv")
-    training_combo_path = os.path.join(exp_dir, "training_combo.csv")
+    full_combo_path = os.path.join(exp_dir, FULL_COMBO_FILENAME)
+    full_combo_decoded_path = os.path.join(exp_dir, FULL_COMBO_DECODED_FILENAME)
+    training_combo_path = os.path.join(exp_dir, TRAINING_COMBO_FILENAME)
 
     full_combo_encoded_df.to_csv(full_combo_path, index=False)
     # Decoded full combo file is writing if its
