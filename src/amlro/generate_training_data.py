@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -14,7 +14,7 @@ def generate_training_data(
     obj_values: List = [],
     filename: str = REACTION_DATA_FILENAME,
     termination: bool = False,
-) -> List:
+) -> List[Any]:
     """Generates a training dataset for the ML model.
 
     This function handles the generation of training data point for the optimization
@@ -28,12 +28,13 @@ def generate_training_data(
     :type exp_dir: str
     :param config: Dictionary of parameters
     :type config: Dict
-    :param parameters: parameter set from previous experiment or initial parameters,
+    :param parameters: Previous experiment parameters or initial parameters,
                        defaults to [].
     :type parameters: List, optional
     :param obj_values: experimental yield from previous experiment.
     :type obj_values: List, optional
-    :param filename: filename for reaction data file, defaults to reaction_data.csv.
+    :param filename: filename for reaction data file, filename for reaction data file,
+                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.
     :type filename: str, optional
     :param termination: termination of the training function after last iteration
                         without returning next reaction conditions, defaults to False
@@ -54,7 +55,7 @@ def generate_training_data(
         # and complete writing last results to the file.
         # should activated in last iteration+1
         print("Training set generation completed..")
-        return
+        return None
 
     # Reads the training combo file and returns the next reaction conditions.
     next_conditions = get_next_training_conditions(
@@ -65,19 +66,20 @@ def generate_training_data(
         return next_conditions
     else:
         print("Training set generation completed.")
-        return
+        return None
 
 
 def get_next_training_conditions(
     exp_dir: str, config: Dict, filename: str = REACTION_DATA_FILENAME
-) -> List:
+) -> List[Any]:
     """Returns next reaction conditions from the training reaction space.
 
     :param exp_dir: experimental directory for saving data files
     :type exp_dir: str
     :param config: Dictionary of parameters
     :type config: Dict
-    :param filename: filename for reaction data file, defaults to reaction_data.csv.
+    :param filename: filename for reaction data file, filename for reaction data file,
+                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.
     :type filename: str, optional
     :return: parameter set for next experiment.
     :rtype: List
@@ -126,9 +128,9 @@ def write_data_to_training_files(
     :type exp_dir: str
     :param config: Dictionary of parameters
     :type config: Dict
-    :param parameters: parameter set from previous experiment or initial parameters,
-                       defaults to [].
-    :type parameters: List, optional
+    :param filename: filename for reaction data file, filename for reaction data file,
+                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.
+    :type filename: str, optional
     :param obj_values: experimental yield from previous experiment.
     :type obj_values: List, optional
     :param filename: filename for reaction data file, defaults to reaction_data.csv.
@@ -199,13 +201,14 @@ def write_line_to_a_file(training_file: str, reaction_results: str) -> None:
 
 def load_training_conditions(
     training_combo: str = TRAINING_COMBO_FILENAME,
-) -> List:  # pragma: no cov
+) -> List[Any]:  # pragma: no cov
     """Loads the training data.
 
     Reads the combination file as pandas data frame and return the
     reaction combination data as list.
 
-    :param training_combo: training parameter combination file path
+    :param training_combo: training parameter combination file path, defaults
+         to the value of `amlro.const.TRAINING_COMBO_FILE`.
     :type training_combo: str
     :return: training parameter combination list
     :rtype: List
@@ -232,7 +235,8 @@ def write_training_data(
     :type exp_dir: str
     :param objectives: objective values for training reaction conditions
     :type objectives: List[List]
-    :param filename: filename for reaction data file, defaults to reaction_data.csv.
+    :param filename: filename for reaction data file, filename for reaction data file,
+                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.
     :type filename: str, optional
 
     :raises ValueError: if lengths of training conditions and objectives dont match.
