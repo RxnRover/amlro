@@ -10,7 +10,7 @@ from amlro.const import (
     FULL_COMBO_FILENAME,
     TRAINING_COMBO_FILENAME,
 )
-from amlro.optimizer import optimizer
+from amlro.optimizer import categorical_feature_encoding
 from amlro.sampling_methods import (
     latin_hypercube_sampling,
     random_sampling,
@@ -132,9 +132,7 @@ def generate_reaction_grid(config: Dict) -> pd.DataFrame:
 
     # encoding the reaction combinations
     encoded_data = df.apply(
-        lambda row: optimizer.categorical_feature_encoding(
-            config, row.tolist()
-        ),
+        lambda row: categorical_feature_encoding(config, row.tolist()),
         axis=1,
     )
     encoded_df = pd.DataFrame(encoded_data.tolist(), columns=df.columns)

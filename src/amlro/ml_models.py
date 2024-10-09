@@ -12,216 +12,216 @@ from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 
 
-class ml_models:
+def elastic_net_regressor() -> Tuple[ElasticNet, Dict]:
     """
-    This class provides a collection of machine learning regression models
-    with their respective hyperparameter grids for model training and tuning.
+    Creates an ElasticNet regressor with a grid of hyperparameters.
 
-    The class includes common regressors like ElasticNet, DecisionTree,
-    RandomForest, GradientBoosting, AdaBoost, XGBoost, SVR, KNN, and Bayesian Ridge.
+    :return: The ElasticNet model and hyperparameter grid.
+    :rtype: Tuple[ElasticNet,Dict]
     """
 
-    def elastic_net_regressor() -> Tuple[ElasticNet, Dict]:
-        """
-        Creates an ElasticNet regressor with a grid of hyperparameters.
+    regr = ElasticNet()
 
-        :return: The ElasticNet model and hyperparameter grid.
-        :rtype: Tuple[ElasticNet,Dict]
-        """
+    param_grid = {
+        "alpha": [0.1, 0.5, 1.0],
+        "l1_ratio": [0.2, 0.5, 0.8],
+    }
 
-        regr = ElasticNet()
+    return regr, param_grid
 
-        param_grid = {
-            "alpha": [0.1, 0.5, 1.0],
-            "l1_ratio": [0.2, 0.5, 0.8],
-        }
 
-        return regr, param_grid
+def decision_tree_regressor() -> Tuple[DecisionTreeRegressor, Dict]:
+    """
+    Creates a DecisionTree regressor with a grid of hyperparameters.
 
-    def decision_tree_regressor() -> Tuple[DecisionTreeRegressor, Dict]:
-        """
-        Creates a DecisionTree regressor with a grid of hyperparameters.
+    :return: The DecisionTreeRegressor model and hyperparameter grid.
+    :rtype: Tuple[DecisionTreeRegressor, Dict]
+    """
 
-        :return: The DecisionTreeRegressor model and hyperparameter grid.
-        :rtype: Tuple[DecisionTreeRegressor, Dict]
-        """
+    regr = DecisionTreeRegressor()
 
-        regr = DecisionTreeRegressor()
+    param_grid = {
+        "max_depth": [None, 2, 4],
+        "min_samples_split": [2, 5, 10],
+        "min_samples_leaf": [1, 2, 4],
+        "max_features": [None, "sqrt", "log2"],
+    }
 
-        param_grid = {
-            "max_depth": [None, 2, 4],
-            "min_samples_split": [2, 5, 10],
-            "min_samples_leaf": [1, 2, 4],
-            "max_features": [None, "sqrt", "log2"],
-        }
+    return regr, param_grid
 
-        return regr, param_grid
 
-    def random_forest_regressor() -> Tuple[RandomForestRegressor, Dict]:
-        """
-        Creates a RandomForest regressor with a grid of hyperparameters.
+def random_forest_regressor() -> Tuple[RandomForestRegressor, Dict]:
+    """
+    Creates a RandomForest regressor with a grid of hyperparameters.
 
-        :return: The RandomForestRegressor model and hyperparameter grid.
-        :rtype: Tuple[RandomForestRegressor, Dict]
-        """
+    :return: The RandomForestRegressor model and hyperparameter grid.
+    :rtype: Tuple[RandomForestRegressor, Dict]
+    """
 
-        regr = RandomForestRegressor()
+    regr = RandomForestRegressor()
 
-        estimators_int = list(range(100, 500, 50))
-        param_grid = {
-            "n_estimators": estimators_int,
-            "max_depth": [None, 2, 4],
-            "max_features": ["auto", "sqrt", "log2"],
-        }
+    estimators_int = list(range(100, 500, 50))
+    param_grid = {
+        "n_estimators": estimators_int,
+        "max_depth": [None, 2, 4],
+        "max_features": ["auto", "sqrt", "log2"],
+    }
 
-        return regr, param_grid
+    return regr, param_grid
 
-    def gradient_boost_regressor() -> Tuple[GradientBoostingRegressor, Dict]:
-        """
-        Creates a GradientBoosting regressor with a grid of hyperparameters.
 
-        :return: The GradientBoostingRegressor model and hyperparameter grid.
-        :rtype: Tuple[GradientBoostingRegressor, Dict]
-        """
+def gradient_boost_regressor() -> Tuple[GradientBoostingRegressor, Dict]:
+    """
+    Creates a GradientBoosting regressor with a grid of hyperparameters.
 
-        regr = GradientBoostingRegressor()
+    :return: The GradientBoostingRegressor model and hyperparameter grid.
+    :rtype: Tuple[GradientBoostingRegressor, Dict]
+    """
 
-        estimators_int = list(range(100, 500, 50))
-        param_grid = {
-            "n_estimators": estimators_int,
-            "learning_rate": [0.01, 0.1, 0.2],
-            "max_depth": [None, 2, 4],
-        }
+    regr = GradientBoostingRegressor()
 
-        return regr, param_grid
+    estimators_int = list(range(100, 500, 50))
+    param_grid = {
+        "n_estimators": estimators_int,
+        "learning_rate": [0.01, 0.1, 0.2],
+        "max_depth": [None, 2, 4],
+    }
 
-    def xgboost_regressor() -> Tuple[xgboost.XGBRegressor, Dict]:
-        """
-        Creates an XGBoost regressor with a grid of hyperparameters.
+    return regr, param_grid
 
-        :return: The XGBoost model and hyperparameter grid.
-        :rtype: Tuple[xgboost.XGBRegressor, Dict]
-        """
 
-        regr = xgboost.XGBRegressor()
+def xgboost_regressor() -> Tuple[xgboost.XGBRegressor, Dict]:
+    """
+    Creates an XGBoost regressor with a grid of hyperparameters.
 
-        estimators_int = list(range(100, 500, 50))
-        param_grid = {
-            "n_estimators": estimators_int,
-            "learning_rate": [0.01, 0.1, 0.2],
-            "max_depth": [2, 3],
-            "subsample": [0.8, 1.0],
-        }
+    :return: The XGBoost model and hyperparameter grid.
+    :rtype: Tuple[xgboost.XGBRegressor, Dict]
+    """
 
-        return regr, param_grid
+    regr = xgboost.XGBRegressor()
 
-    def adaboost_regressor() -> Tuple[AdaBoostRegressor, Dict]:
-        """
-        Creates an AdaBoost regressor with a grid of hyperparameters.
+    estimators_int = list(range(100, 500, 50))
+    param_grid = {
+        "n_estimators": estimators_int,
+        "learning_rate": [0.01, 0.1, 0.2],
+        "max_depth": [2, 3],
+        "subsample": [0.8, 1.0],
+    }
 
-        :return: The AdaBoostRegressor model and hyperparameter grid.
-        :rtype: Tuple[AdaBoostRegressor, Dict]
-        """
+    return regr, param_grid
 
-        regr = AdaBoostRegressor()
 
-        estimators_int = list(range(100, 500, 50))
-        param_grid = {
-            "n_estimators": estimators_int,
-            "learning_rate": [0.01, 0.1, 0.2],
-            "loss": ["linear", "square", "exponential"],
-        }
+def adaboost_regressor() -> Tuple[AdaBoostRegressor, Dict]:
+    """
+    Creates an AdaBoost regressor with a grid of hyperparameters.
 
-        return regr, param_grid
+    :return: The AdaBoostRegressor model and hyperparameter grid.
+    :rtype: Tuple[AdaBoostRegressor, Dict]
+    """
 
-    def support_vector_regressor() -> Tuple[SVR, Dict]:
-        """
-        Creates a Support Vector Regressor (SVR) with a grid of hyperparameters.
+    regr = AdaBoostRegressor()
 
-        :return: The SVR model and hyperparameter grid.
-        :rtype: Tuple[SVR, Dict]
-        """
+    estimators_int = list(range(100, 500, 50))
+    param_grid = {
+        "n_estimators": estimators_int,
+        "learning_rate": [0.01, 0.1, 0.2],
+        "loss": ["linear", "square", "exponential"],
+    }
 
-        regr = SVR()
+    return regr, param_grid
 
-        param_grid = {
-            "kernel": ["linear", "poly", "rbf", "sigmoid"],
-            "epsilon": [0.1, 0.01, 0.05],
-        }
 
-        return regr, param_grid
+def support_vector_regressor() -> Tuple[SVR, Dict]:
+    """
+    Creates a Support Vector Regressor (SVR) with a grid of hyperparameters.
 
-    def knn_regressor() -> Tuple[KNeighborsRegressor, Dict]:
-        """
-        Creates a K-Nearest Neighbors (KNN) regressor with a grid of hyperparameters.
+    :return: The SVR model and hyperparameter grid.
+    :rtype: Tuple[SVR, Dict]
+    """
 
-        :return: The KNeighborsRegressor model and hyperparameter grid.
-        :rtype: Tuple[KNeighborsRegressor, Dict]
-        """
+    regr = SVR()
 
-        regr = KNeighborsRegressor()
+    param_grid = {
+        "kernel": ["linear", "poly", "rbf", "sigmoid"],
+        "epsilon": [0.1, 0.01, 0.05],
+    }
 
-        param_grid = {
-            "n_neighbors": [3, 5, 7, 10],
-            "weights": ["uniform", "distance"],
-            "metric": ["euclidean", "manhattan", "minkowski"],
-        }
+    return regr, param_grid
 
-        return regr, param_grid
 
-    def bayesian_ridge_regressor() -> Tuple[BayesianRidge, Dict]:
-        """
-        Creates a BayesianRidge regressor with a grid of hyperparameters.
+def knn_regressor() -> Tuple[KNeighborsRegressor, Dict]:
+    """
+    Creates a K-Nearest Neighbors (KNN) regressor with a grid of hyperparameters.
 
-        :return: The BayesianRidge model and hyperparameter grid.
-        :rtype: Tuple[BayesianRidge, Dict]
-        """
+    :return: The KNeighborsRegressor model and hyperparameter grid.
+    :rtype: Tuple[KNeighborsRegressor, Dict]
+    """
 
-        regr = BayesianRidge()
+    regr = KNeighborsRegressor()
 
-        param_grid = {
-            "alpha_1": [1e-6, 1e-5, 1e-4],
-            "alpha_2": [1e-6, 1e-5, 1e-4],
-            "lambda_1": [1e-6, 1e-5, 1e-4],
-            "lambda_2": [1e-6, 1e-5, 1e-4],
-            "tol": [1e-4, 1e-3, 1e-2],
-        }
+    param_grid = {
+        "n_neighbors": [3, 5, 7, 10],
+        "weights": ["uniform", "distance"],
+        "metric": ["euclidean", "manhattan", "minkowski"],
+    }
 
-        return regr, param_grid
+    return regr, param_grid
 
-    def get_regressor_model(model: str) -> Tuple[object, Dict]:
-        """
-        Retrieves the specified regressor model and its hyperparameter grid.
 
-        :param model: The name of the model to retrieve. Supported values are:
-            'ela_net', 'dtree', 'rf', 'gb', 'xgb', 'aboost', 'svr', 'knn',
-            'bayesian_ridge'.
-        :type model: str
-        :return: The selected model and its hyperparameter grid.
-        :rtype: Tuple[model object, Dict]
-        """
+def bayesian_ridge_regressor() -> Tuple[BayesianRidge, Dict]:
+    """
+    Creates a BayesianRidge regressor with a grid of hyperparameters.
 
-        param_grid = {}
+    :return: The BayesianRidge model and hyperparameter grid.
+    :rtype: Tuple[BayesianRidge, Dict]
+    """
 
-        if model == "ela_net":
-            regr, param_grid = ml_models.elastic_net_regressor()
-        elif model == "dtree":
-            regr, param_grid = ml_models.decision_tree_regressor()
-        elif model == "rf":
-            regr, param_grid = ml_models.random_forest_regressor()
-        elif model == "gb":
-            regr, param_grid = ml_models.gradient_boost_regressor()
-        elif model == "xgb":
-            regr, param_grid = ml_models.xgboost_regressor()
-        elif model == "aboost":
-            regr, param_grid = ml_models.adaboost_regressor()
-        elif model == "svr":
-            regr, param_grid = ml_models.support_vector_regressor()
-        elif model == "knn":
-            regr, param_grid = ml_models.knn_regressor()
-        elif model == "bayesian_ridge":
-            regr, param_grid = ml_models.bayesian_ridge_regressor()
-        else:
-            regr, param_grid = ml_models.gradient_boost_regressor()
+    regr = BayesianRidge()
 
-        return regr, param_grid
+    param_grid = {
+        "alpha_1": [1e-6, 1e-5, 1e-4],
+        "alpha_2": [1e-6, 1e-5, 1e-4],
+        "lambda_1": [1e-6, 1e-5, 1e-4],
+        "lambda_2": [1e-6, 1e-5, 1e-4],
+        "tol": [1e-4, 1e-3, 1e-2],
+    }
+
+    return regr, param_grid
+
+
+def get_regressor_model(model: str) -> Tuple[object, Dict]:
+    """
+    Retrieves the specified regressor model and its hyperparameter grid.
+
+    :param model: The name of the model to retrieve. Supported values are:
+        'ela_net', 'dtree', 'rf', 'gb', 'xgb', 'aboost', 'svr', 'knn',
+        'bayesian_ridge'.
+    :type model: str
+    :return: The selected model and its hyperparameter grid.
+    :rtype: Tuple[model object, Dict]
+    """
+
+    param_grid = {}
+
+    if model == "ela_net":
+        regr, param_grid = elastic_net_regressor()
+    elif model == "dtree":
+        regr, param_grid = decision_tree_regressor()
+    elif model == "rf":
+        regr, param_grid = random_forest_regressor()
+    elif model == "gb":
+        regr, param_grid = gradient_boost_regressor()
+    elif model == "xgb":
+        regr, param_grid = xgboost_regressor()
+    elif model == "aboost":
+        regr, param_grid = adaboost_regressor()
+    elif model == "svr":
+        regr, param_grid = support_vector_regressor()
+    elif model == "knn":
+        regr, param_grid = knn_regressor()
+    elif model == "bayesian_ridge":
+        regr, param_grid = bayesian_ridge_regressor()
+    else:
+        regr, param_grid = gradient_boost_regressor()
+
+    return regr, param_grid
