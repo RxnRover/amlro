@@ -64,7 +64,7 @@ def validate_reaction_scope_config(config: Dict) -> None:
 
 
 def validate_optimizer_config(config: Dict) -> None:
-    """Validates the configdict for the optimizer and generate training set.
+    """Validates the config dict for the optimizer and generate training set.
 
     :param config: Configuration to be checked
     :type config: Dict
