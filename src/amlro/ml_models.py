@@ -1,3 +1,28 @@
+""" This module provides a framework for retrieving various regression models
+    along with their corresponding hyperparameter grids for hyper parameter tuning.
+    Regression Models:
+    - ElasticNet
+    - Decision Tree
+    - Random Forest
+    - Gradient Boosting
+    - XGBoost
+    - AdaBoost
+    - Support Vector Regressor
+    - K-Nearest Neighbors (KNN)
+    - Bayesian Ridge
+
+    Each function returns a regressor model object and a hyperparameter grid for use
+    in hyperparameter optimization (e.g., using grid search
+    in `optimizer.model_training`).
+
+    The main function `get_regressor_model(model: str)` serves as the entry point
+    to select a model based on user input, returning the chosen model and grid
+    for training and tuning.
+
+    Usage:
+        model, param_grid = get_regressor_model('xgb')
+"""
+
 from typing import Dict, Tuple
 
 import xgboost
@@ -202,6 +227,7 @@ def get_regressor_model(model: str) -> Tuple[object, Dict]:
     """
 
     param_grid = {}
+    model = model.lower()
 
     if model == "ela_net":
         regr, param_grid = elastic_net_regressor()
@@ -222,6 +248,6 @@ def get_regressor_model(model: str) -> Tuple[object, Dict]:
     elif model == "bayesian_ridge":
         regr, param_grid = bayesian_ridge_regressor()
     else:
-        regr, param_grid = gradient_boost_regressor()
+        raise ValueError("Invalid regressor name given: {}".format(model))
 
     return regr, param_grid

@@ -5,6 +5,7 @@ import pandas as pd
 
 from amlro.const import REACTION_DATA_FILENAME, TRAINING_COMBO_FILENAME
 from amlro.optimizer import categorical_feature_encoding
+from amlro.validations import validate_optimizer_config
 
 
 def generate_training_data(
@@ -42,6 +43,8 @@ def generate_training_data(
     :return: parameter set for next experiment.
     :rtype: List
     """
+
+    validate_optimizer_config(config)
 
     write_data_to_training_files(
         exp_dir=exp_dir,

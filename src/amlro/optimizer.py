@@ -9,6 +9,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from amlro.const import FULL_COMBO_FILENAME, REACTION_DATA_FILENAME
 from amlro.ml_models import get_regressor_model
 from amlro.pareto import identify_pareto_front
+from amlro.validations import validate_optimizer_config
 
 
 def load_data(
@@ -16,20 +17,21 @@ def load_data(
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Loading dataset files
 
-        Reads the training set file and all combination file as pandas data
-        frames and split into x train , y train and test datasets. When loading
-        the combination file, data rows will be deleted if they include
-        in training file.
+    Reads the training set file and all combination file as pandas data
+    frames and split into x train , y train and test datasets. When loading
+    the combination file, data rows will be deleted if they are included
+    in training file.
 
     :param training_file: path to the training set file.
     :type training_file: str
-    :param combination_file: path to the combination file
+    :param combination_file: path to the combination file.
     :type combination_file: str
-    :param config: Dictionary of optimizer parameters
+    :param config: Dictionary of optimizer parameters.
     :type config: Dict
-    :return: x and y traning datasets and test dataset
-    :rtype: Dataframe,Dataframe, Dataframe
+    :return: x and y training datasets and test dataset.
+    :rtype: Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
     """
+
     train = pd.read_csv(reactions_data)
 
     target_columns = config["objectives"]
@@ -50,18 +52,23 @@ def load_data(
     return x_train, y_train, data
 
 
-def model_training(x_train: pd.DataFrame, y_train: pd.DataFrame, model="gb"):
-    """traning the regressor model and return the best model.
+def model_training(
+    x_train: pd.DataFrame, y_train: pd.DataFrame, model: str = "gb"
+) -> object:
+    """Train the regressor model and return the best model.
 
-    :param x_train: training dataset.
-    :type x_train: Dataframe
-    :param y_train: target dataframe for training.
-    :type y_train: Dataframe
-    :param model: Regressor model name
+    :param x_train: training dataset that contains feature values.
+    :type x_train: pd.Dataframe
+    :param y_train: target dataframe that contains objective values.
+    :type y_train: pd.Dataframe
+    :param model: Regressor model name.
+        Valid options: 'ela_net', 'dtree', 'rf', 'gb', 'xgb', 'aboost', 'svr', 'knn',
+        'bayesian_ridge'. Default is 'gb' (Gradient Boosting).
     :type model: str
     :return: trained regressor model
-    :rtype: model
+    :rtype: model object with a `predict` method (e.g., sklearn regressor)
     """
+
     # instead shufflesplit we can use  KFold(n_splits=5, shuffle=True)
     # or RepeatedKFold(n_splits=5, n_repeats=3).
     kfold = ShuffleSplit(n_splits=10, test_size=0.2)
@@ -80,14 +87,18 @@ def model_training(x_train: pd.DataFrame, y_train: pd.DataFrame, model="gb"):
     return regr
 
 
-def mo_model_training(x_train: pd.DataFrame, y_train: pd.DataFrame, model="gb"):
-    """traning the multi output regressor model and return the best model.
+def mo_model_training(
+    x_train: pd.DataFrame, y_train: pd.DataFrame, model: str = "gb"
+) -> object:
+    """Train the multi output regressor model and return the best model.
 
-    :param x_train: training dataset.
-    :type x_train: Dataframe
-    :param y_train: target dataframe for training.
-    :type y_train: Dataframe
-    :param model: Regressor model name
+    :param x_train: training dataset that contains feature values.
+    :type x_train: pd.Dataframe
+    :param y_train: target dataframe that contains objective values.
+    :type y_train: pd.Dataframe
+    :param model: Regressor model name.
+        Valid options: 'ela_net', 'dtree', 'rf', 'gb', 'xgb', 'aboost', 'svr', 'knn',
+        'bayesian_ridge'. Default is 'gb' (Gradient Boosting).
     :type model: str
     :return: trained regressor model
     :rtype:  model object with a `predict` method (e.g., sklearn regressor)
@@ -116,26 +127,27 @@ def mo_model_training(x_train: pd.DataFrame, y_train: pd.DataFrame, model="gb"):
 
 
 def predict_next_parameters(
-    regr, data: pd.DataFrame, config: dict, batch_siz: int = 1
+    regr, data: pd.DataFrame, config: Dict, batch_size: int = 1
 ) -> pd.DataFrame:
-    """predicting the yield from all the combination data using trained
+    """Predicts the yield from all the combination data using a trained
     regressor model and return the best combinations.
 
     The function handles both single-objective and multi-objective optimization.
     In the single-objective case, it sorts the predicted results based on the
     specified direction (maximization or minimization).
     In the multi-objective case, it identifies the Pareto front and ranks solutions
-    by computing weighted sums of normalized objectives.
+    by computing weighted sums of normalized objectives. Weights are defined as
+    -1 for min and +1 for max.
 
     :param regr: trained regressor model
     :type regr: model object with a `predict` method (e.g., sklearn regressor)
-    :param data: test dataset
+    :param data: test dataset that contains full reaction space
     :type data: pd.Dataframe
     :param config: Dictionary of optimizer parameters
     :type config: Dict
     :param batch_size: Number of reactions conditions need as predictions
-        defaults to [].
-    :type data: int, optional
+        defaults to 1.
+    :type batch_size: int, optional
     :return: batch of best predicted parameter
     :rtype: pd.Dataframe
     """
@@ -148,11 +160,11 @@ def predict_next_parameters(
         if config["directions"][0] == "max":
             best_parameters = prediction_df.sort_values(
                 by=[config["objectives"][0]], ascending=False
-            ).iloc[:batch_siz]
+            ).iloc[:batch_size]
         elif config["directions"][0] == "min":
             best_parameters = prediction_df.sort_values(
                 by=[config["objectives"][0]], ascending=True
-            ).iloc[:batch_siz]
+            ).iloc[:batch_size]
 
         best_parameters = best_parameters.drop(config["objectives"][0], axis=1)
 
@@ -176,7 +188,7 @@ def predict_next_parameters(
             normalized_front[:, nfeatures:] * weights, axis=1
         )
 
-        num_solutions = min(len(pareto_front), batch_siz)
+        num_solutions = min(len(pareto_front), batch_size)
 
         # Get the indices of the top `num_solutions` weighted sums
         best_indexs = np.argsort(weighted_sums)[-num_solutions:][::-1]
@@ -191,12 +203,12 @@ def predict_next_parameters(
 def get_optimized_parameters(
     exp_dir: str,
     config: Dict,
-    parameters_list=[[]],
-    objectives_list=[[]],
-    model="gb",
+    parameters_list: List[List] = [[]],
+    objectives_list: List[List] = [[]],
+    model: str = "gb",
     filename: str = REACTION_DATA_FILENAME,
-    batch_size=1,
-    termination=False,
+    batch_size: int = 1,
+    termination: bool = False,
 ) -> List[List]:
     """
     Trains a machine learning model using the provided training data and
@@ -231,6 +243,7 @@ def get_optimized_parameters(
     :rtype: List[List]
     """
 
+    validate_optimizer_config(config)
     # Encode and decode the provided parameters and objectives and
     # make a str for writes.
     parameters_encoded, parameters_decoded = stringify_parameters_objectives(
@@ -333,14 +346,14 @@ def categorical_feature_decoding(
     config: Dict, best_combo: List[Any]
 ) -> List[Any]:
     """This method converts encoded parameter list into decoded list.
-            Convert categorical feature values back into its names.
+    Convert categorical feature values back into its names.
 
     :param config: Initial reaction feature configurations
     :type config: Dict
     :param best_combo: parameter list required for decoding
-    :type best_combo: list
+    :type best_combo: List[Any]
     :return: Decoded parameter list
-    :rtype: list
+    :rtype: List[Any]
     """
 
     numerical_feature_count = len(config["continuous"]["feature_names"])
@@ -363,14 +376,14 @@ def categorical_feature_encoding(
     config: Dict, prev_parameters: List[Any]
 ) -> List[Any]:
     """This method converts decoded parameter list into encoded list.
-            Convert categorical feature values into its numerical values.
+    Convert categorical feature values into its numerical values.
 
     :param config: Initial reaction feature configurations
     :type config: Dict
     :param prev_parameters: parameter list required for encoding
-    :type prev_parameters: list
+    :type prev_parameters: List[Any]
     :return: encoded parameter list
-    :rtype: list
+    :rtype: List[Any]
     """
 
     numerical_feature_count = len(config["continuous"]["feature_names"])
@@ -399,7 +412,7 @@ def write_data_to_training(
     :param training_file: traning set file path
     :type training_file: str
     :param prev_parameters: previous best combo and yield
-    :type prev_parameters: str
+    :type prev_parameters: List[str]
     """
 
     # Open the file in append & read mode ('a+')
