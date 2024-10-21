@@ -61,3 +61,34 @@ def validate_reaction_scope_config(config: Dict) -> None:
             len(config["categorical"]["values"]),
         )
         raise ValueError(msg)
+
+
+def validate_optimizer_config(config: Dict) -> None:
+    """Validates the config dict for the optimizer and generate training set.
+
+    :param config: Configuration to be checked
+    :type config: Dict
+
+    :raises ValueError: If lengths of directions and objectives do not match.
+    :raises ValueError: If any direction is not 'min' or 'max'.
+    """
+
+    # Check feature related config
+    validate_reaction_scope_config(config)
+
+    # Check if directions and objectives have the same length
+    if len(config["directions"]) != len(config["objectives"]):
+        msg = "Lengths of directions and objectives must match. "
+        msg += "Given directions: {}, Given objectives: {}".format(
+            len(config["directions"]), len(config["objectives"])
+        )
+        raise ValueError(msg)
+
+    # Check if directions only contain 'min' or 'max'
+    valid_directions = {"min", "max"}
+    for direction in config["directions"]:
+        if direction not in valid_directions:
+            msg = f"Invalid direction '{direction}' found. "
+            msg += "Directions must only contain 'min' or 'max'. "
+            msg += "Given directions: {}".format(config["directions"])
+            raise ValueError(msg)

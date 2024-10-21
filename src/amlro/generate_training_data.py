@@ -4,7 +4,8 @@ from typing import Any, Dict, List
 import pandas as pd
 
 from amlro.const import REACTION_DATA_FILENAME, TRAINING_COMBO_FILENAME
-from amlro.optimizer import optimizer
+from amlro.optimizer import categorical_feature_encoding
+from amlro.validations import validate_optimizer_config
 
 
 def generate_training_data(
@@ -42,6 +43,8 @@ def generate_training_data(
     :return: parameter set for next experiment.
     :rtype: List
     """
+
+    validate_optimizer_config(config)
 
     write_data_to_training_files(
         exp_dir=exp_dir,
@@ -163,9 +166,7 @@ def write_data_to_training_files(
             # stop writing if previous reaction data file exists.
             return
 
-        parameters_encoded = optimizer.categorical_feature_encoding(
-            config, parameters
-        )
+        parameters_encoded = categorical_feature_encoding(config, parameters)
 
         prev_parameters = (
             ",".join([str(elem) for elem in parameters])
@@ -255,9 +256,7 @@ def write_training_data(
         raise ValueError(msg)
 
     encoded_data = reaction_conditions_df.apply(
-        lambda row: optimizer.categorical_feature_encoding(
-            config, row.tolist()
-        ),
+        lambda row: categorical_feature_encoding(config, row.tolist()),
         axis=1,
     )
     encoded_df = pd.DataFrame(
