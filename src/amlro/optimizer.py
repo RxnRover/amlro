@@ -71,6 +71,7 @@ def model_training(
 
     # instead shufflesplit we can use  KFold(n_splits=5, shuffle=True)
     # or RepeatedKFold(n_splits=5, n_repeats=3).
+    y_train = y_train.values.ravel()
     kfold = ShuffleSplit(n_splits=10, test_size=0.2)
 
     regr, param_grid = get_regressor_model(model)
