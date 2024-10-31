@@ -169,10 +169,16 @@ def write_reaction_scope(
     full_combo_decoded_path = os.path.join(exp_dir, FULL_COMBO_DECODED_FILENAME)
     training_combo_path = os.path.join(exp_dir, TRAINING_COMBO_FILENAME)
 
-    full_combo_encoded_df.to_csv(full_combo_path, index=False)
+    full_combo_encoded_df.to_csv(
+        full_combo_path, float_format="%.5f", index=False
+    )
     # Decoded full combo file is writing if its
     # smaller reaction space (less than 20000)
     if full_combo_df.shape[0] <= 20000:
-        full_combo_df.to_csv(full_combo_decoded_path, index=False)
+        full_combo_df.to_csv(
+            full_combo_decoded_path, float_format="%.5f", index=False
+        )
 
-    training_combo_df.to_csv(training_combo_path, index=False)
+    training_combo_df.to_csv(
+        training_combo_path, float_format="%.5f", index=False
+    )

@@ -274,5 +274,9 @@ def write_training_data(
     decoded_filename = f"{name}_decoded{extension}"
     training_dataset_decoded_path = os.path.join(exp_dir, decoded_filename)
     # file writing
-    training_encoded_df.to_csv(training_dataset_path, index=False)
-    training_df.to_csv(training_dataset_decoded_path, index=False)
+    training_encoded_df.to_csv(
+        training_dataset_path, float_format="%.5f", index=False
+    )
+    training_df.to_csv(
+        training_dataset_decoded_path, float_format="%.5f", index=False
+    )
