@@ -18,7 +18,7 @@ def random_sampling(df: pd.DataFrame, sample_size: int = 20) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
 
-    sample_df = resample(df, n_samples=sample_size)
+    sample_df = resample(df, n_samples=sample_size, replace=False)
 
     return sample_df
 
@@ -48,6 +48,9 @@ def latin_hypercube_sampling(
 
     training_df = feature_scaling(lhs_samples, config)
 
+    if training_df.duplicated().any():
+        return latin_hypercube_sampling(config, sample_size)
+
     return training_df
 
 
@@ -75,6 +78,9 @@ def sobol_sequnce_sampling(config: Dict, sample_size: int = 20) -> pd.DataFrame:
     sobol_samples = sobol_engine.random(n=sample_size)
 
     training_df = feature_scaling(sobol_samples, config)
+
+    if training_df.duplicated().any():
+        return sobol_sequnce_sampling(config, sample_size)
 
     return training_df
 
@@ -117,10 +123,9 @@ def feature_scaling(samples: List[List], config: Dict) -> pd.DataFrame:
     ):
 
         min_val, max_val = bounds
-        print(min_val, max_val)
         resolution = config["continuous"]["resolutions"][i]
         sample_scaled = samples[:, i] * (max_val - min_val) + min_val
-        print(samples[:, i], sample_scaled)
+
         scaled_df[feature_name] = (
             np.round(sample_scaled / resolution) * resolution
         )
