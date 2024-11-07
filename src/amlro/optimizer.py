@@ -72,9 +72,13 @@ def model_training(
     # instead shufflesplit we can use  KFold(n_splits=5, shuffle=True)
     # or RepeatedKFold(n_splits=5, n_repeats=3).
     y_train = y_train.values.ravel()
-    kfold = ShuffleSplit(n_splits=10, test_size=0.2)
+    SEED = 42
+    kfold = ShuffleSplit(n_splits=10, test_size=0.2, random_state=SEED)
 
     regr, param_grid = get_regressor_model(model)
+
+    if model != "svr" and model != "knn" and model != "bayesian_ridge":
+        regr.set_params(random_state=SEED)
 
     grid = GridSearchCV(
         estimator=regr, param_grid=param_grid, cv=kfold, n_jobs=6
@@ -105,10 +109,14 @@ def mo_model_training(
     :rtype:  model object with a `predict` method (e.g., sklearn regressor)
     """
 
-    kfold = ShuffleSplit(n_splits=10, test_size=0.2)
+    SEED = 42
+    kfold = ShuffleSplit(n_splits=10, test_size=0.2, random_state=SEED)
 
     # base regressor model
     regr, param_grid = get_regressor_model(model)
+
+    if model != "svr" and model != "knn" and model != "bayesian_ridge":
+        regr.set_params(random_state=SEED)
 
     # multi objective regressor model
     mo_regr = MultiOutputRegressor(regr)
