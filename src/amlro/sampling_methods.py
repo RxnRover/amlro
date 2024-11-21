@@ -24,7 +24,7 @@ def random_sampling(df: pd.DataFrame, sample_size: int = 20) -> pd.DataFrame:
 
 
 def latin_hypercube_sampling(
-    config: Dict, sample_size: int = 20
+    config: Dict, sample_size: int = 20, res_factor=1.0
 ) -> pd.DataFrame:
     """Generate subsample from full reaction space using  latent hypercube sampling.
 
@@ -32,6 +32,9 @@ def latin_hypercube_sampling(
     :type config: Dict
     :param sample_size: sub sample size, defaults to 20
     :type sample_size: int, optional
+    :param res_factor: resolution factor to define rounding decimal places,
+        defaults to 20
+    :type res_factor: float, optional
     :return: sub sample of reaction space needed for training set generation
     :rtype: pd.DataFrame
     """
@@ -44,23 +47,32 @@ def latin_hypercube_sampling(
     n_features = len(feature_names)
 
     # Generate LHS samples
-    lhs_samples = lhs(n_features, samples=sample_size)
+    # lhs_samples = lhs(n_features,criterion='center', samples=sample_size)
+    lhs_samples = lhs(
+        n=n_features, criterion="maximin", iterations=1000, samples=sample_size
+    )
 
-    training_df = feature_scaling(lhs_samples, config)
+    training_df = feature_scaling(lhs_samples, config, res_factor)
 
     if training_df.duplicated().any():
-        return latin_hypercube_sampling(config, sample_size)
+        res_factor = res_factor * 0.1
+        return latin_hypercube_sampling(config, sample_size, res_factor)
 
     return training_df
 
 
-def sobol_sequnce_sampling(config: Dict, sample_size: int = 20) -> pd.DataFrame:
+def sobol_sequnce_sampling(
+    config: Dict, sample_size: int = 20, res_factor=1.0
+) -> pd.DataFrame:
     """Generate subsample from full reaction space using Sobol sequnce sampling.
 
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
     :param sample_size: sub sample size, defaults to 20
     :type sample_size: int, optional
+    :param res_factor: resolution factor to define rounding decimal places,
+        defaults to 20
+    :type res_factor: float, optional
     :return: sub sample of reaction space needed for training set generation
     :rtype: pd.DataFrame
     """
@@ -80,12 +92,15 @@ def sobol_sequnce_sampling(config: Dict, sample_size: int = 20) -> pd.DataFrame:
     training_df = feature_scaling(sobol_samples, config)
 
     if training_df.duplicated().any():
-        return sobol_sequnce_sampling(config, sample_size)
+        res_factor = res_factor * 0.1
+        return sobol_sequnce_sampling(config, sample_size, res_factor)
 
     return training_df
 
 
-def feature_scaling(samples: List[List], config: Dict) -> pd.DataFrame:
+def feature_scaling(
+    samples: List[List], config: Dict, res_factor=1.0
+) -> pd.DataFrame:
     """This function will scale and map the continous and
     categorical features from latin hypercube and sobol sampling space.
     These methods will generate coordinates
@@ -102,6 +117,9 @@ def feature_scaling(samples: List[List], config: Dict) -> pd.DataFrame:
     :type samples: List[List]
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
+    :param res_factor: resolution factor to define rounding decimal places,
+        defaults to 20
+    :type res_factor: float, optional
     :return: scaled traning reaction conditions dataframe
     :rtype: pd.DataFrame
     """
@@ -126,8 +144,10 @@ def feature_scaling(samples: List[List], config: Dict) -> pd.DataFrame:
         resolution = config["continuous"]["resolutions"][i]
         sample_scaled = samples[:, i] * (max_val - min_val) + min_val
 
-        scaled_df[feature_name] = (
-            np.round(sample_scaled / resolution) * resolution
+        scaled_df[feature_name] = (  # sample_scaled
+            np.round(sample_scaled / (resolution * res_factor))
+            * resolution
+            * res_factor
         )
 
     # Map and scale categorical features

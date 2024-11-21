@@ -214,7 +214,7 @@ def bayesian_ridge_regressor() -> Tuple[BayesianRidge, Dict]:
     return regr, param_grid
 
 
-def get_regressor_model(model: str) -> Tuple[object, Dict]:
+def get_regressor_model(model: str, seed=None) -> Tuple[object, Dict]:
     """
     Retrieves the specified regressor model and its hyperparameter grid.
 
@@ -249,5 +249,9 @@ def get_regressor_model(model: str) -> Tuple[object, Dict]:
         regr, param_grid = bayesian_ridge_regressor()
     else:
         raise ValueError("Invalid regressor name given: {}".format(model))
+
+    if model != "svr" and model != "knn" and model != "bayesian_ridge":
+        print("Setting random state " + str(seed) + " for ML model")
+        regr.set_params(random_state=seed)
 
     return regr, param_grid

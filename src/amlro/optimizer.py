@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Final, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -10,6 +10,8 @@ from amlro.const import FULL_COMBO_FILENAME, REACTION_DATA_FILENAME
 from amlro.ml_models import get_regressor_model
 from amlro.pareto import identify_pareto_front
 from amlro.validations import validate_optimizer_config
+
+SEED: Final[int] = 42
 
 
 def load_data(
@@ -72,13 +74,9 @@ def model_training(
     # instead shufflesplit we can use  KFold(n_splits=5, shuffle=True)
     # or RepeatedKFold(n_splits=5, n_repeats=3).
     y_train = y_train.values.ravel()
-    SEED = 42
     kfold = ShuffleSplit(n_splits=10, test_size=0.2, random_state=SEED)
 
-    regr, param_grid = get_regressor_model(model)
-
-    if model != "svr" and model != "knn" and model != "bayesian_ridge":
-        regr.set_params(random_state=SEED)
+    regr, param_grid = get_regressor_model(model, SEED)
 
     grid = GridSearchCV(
         estimator=regr, param_grid=param_grid, cv=kfold, n_jobs=6
@@ -109,14 +107,10 @@ def mo_model_training(
     :rtype:  model object with a `predict` method (e.g., sklearn regressor)
     """
 
-    SEED = 42
     kfold = ShuffleSplit(n_splits=10, test_size=0.2, random_state=SEED)
 
     # base regressor model
-    regr, param_grid = get_regressor_model(model)
-
-    if model != "svr" and model != "knn" and model != "bayesian_ridge":
-        regr.set_params(random_state=SEED)
+    regr, param_grid = get_regressor_model(model, SEED)
 
     # multi objective regressor model
     mo_regr = MultiOutputRegressor(regr)
