@@ -11,6 +11,7 @@ from amlro.ml_models import get_regressor_model
 from amlro.pareto import identify_pareto_front
 from amlro.validations import validate_optimizer_config
 
+# random seed for define random state of ML models
 SEED: Final[int] = 42
 
 

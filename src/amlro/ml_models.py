@@ -214,7 +214,7 @@ def bayesian_ridge_regressor() -> Tuple[BayesianRidge, Dict]:
     return regr, param_grid
 
 
-def get_regressor_model(model: str, seed=None) -> Tuple[object, Dict]:
+def get_regressor_model(model: str, seed: int = None) -> Tuple[object, Dict]:
     """
     Retrieves the specified regressor model and its hyperparameter grid.
 
@@ -222,6 +222,8 @@ def get_regressor_model(model: str, seed=None) -> Tuple[object, Dict]:
         'ela_net', 'dtree', 'rf', 'gb', 'xgb', 'aboost', 'svr', 'knn',
         'bayesian_ridge'.
     :type model: str
+    :param seed: Random seed for define random state of the ML model
+    :type seed: int, defaults to None
     :return: The selected model and its hyperparameter grid.
     :rtype: Tuple[model object, Dict]
     """

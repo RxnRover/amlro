@@ -24,7 +24,7 @@ def random_sampling(df: pd.DataFrame, sample_size: int = 20) -> pd.DataFrame:
 
 
 def latin_hypercube_sampling(
-    config: Dict, sample_size: int = 20, res_factor=1.0
+    config: Dict, sample_size: int = 20, res_factor: float = 1.0
 ) -> pd.DataFrame:
     """Generate subsample from full reaction space using  latent hypercube sampling.
 
@@ -33,7 +33,7 @@ def latin_hypercube_sampling(
     :param sample_size: sub sample size, defaults to 20
     :type sample_size: int, optional
     :param res_factor: resolution factor to define rounding decimal places,
-        defaults to 20
+        defaults to 1.0
     :type res_factor: float, optional
     :return: sub sample of reaction space needed for training set generation
     :rtype: pd.DataFrame
@@ -54,6 +54,10 @@ def latin_hypercube_sampling(
 
     training_df = feature_scaling(lhs_samples, config, res_factor)
 
+    # res_factor is added, when feature scaling we are rounding feature values to
+    # fit into the grid resoultions. if we get duplicates when we doing this we make
+    # extra 0.1 factor finer of the resoulution.
+
     if training_df.duplicated().any():
         res_factor = res_factor * 0.1
         return latin_hypercube_sampling(config, sample_size, res_factor)
@@ -62,7 +66,7 @@ def latin_hypercube_sampling(
 
 
 def sobol_sequnce_sampling(
-    config: Dict, sample_size: int = 20, res_factor=1.0
+    config: Dict, sample_size: int = 20, res_factor: float = 1.0
 ) -> pd.DataFrame:
     """Generate subsample from full reaction space using Sobol sequnce sampling.
 
@@ -71,7 +75,7 @@ def sobol_sequnce_sampling(
     :param sample_size: sub sample size, defaults to 20
     :type sample_size: int, optional
     :param res_factor: resolution factor to define rounding decimal places,
-        defaults to 20
+        defaults to 1.0
     :type res_factor: float, optional
     :return: sub sample of reaction space needed for training set generation
     :rtype: pd.DataFrame
@@ -99,7 +103,7 @@ def sobol_sequnce_sampling(
 
 
 def feature_scaling(
-    samples: List[List], config: Dict, res_factor=1.0
+    samples: List[List], config: Dict, res_factor: float = 1.0
 ) -> pd.DataFrame:
     """This function will scale and map the continous and
     categorical features from latin hypercube and sobol sampling space.
@@ -118,7 +122,7 @@ def feature_scaling(
     :param config: Dictionary of parameters, their bounds and resolution.
     :type config: Dict
     :param res_factor: resolution factor to define rounding decimal places,
-        defaults to 20
+        defaults to 1.0
     :type res_factor: float, optional
     :return: scaled traning reaction conditions dataframe
     :rtype: pd.DataFrame
