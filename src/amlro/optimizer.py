@@ -49,8 +49,11 @@ def load_data(
     data = data.merge(
         x_train, on=x_train.columns.to_list(), how="left", indicator=True
     )
+
     data = data[data["_merge"] == "left_only"].drop(columns="_merge")
     data = data.reset_index(drop=True)
+    print(len(data))
+    print(y_train)
 
     return x_train, y_train, data
 
@@ -250,9 +253,6 @@ def get_optimized_parameters(
     validate_optimizer_config(config)
     # Encode and decode the provided parameters and objectives and
     # make a str for writes.
-    parameters_encoded, parameters_decoded = stringify_parameters_objectives(
-        parameters_list, objectives_list, config
-    )
 
     # File paths for saving training data and decoded data
     reaction_data_path = os.path.join(exp_dir, filename)
@@ -263,6 +263,11 @@ def get_optimized_parameters(
 
     # Write encoded and decoded parameter-objective combinations to file
     if len(parameters_list) != 0:
+        parameters_encoded, parameters_decoded = (
+            stringify_parameters_objectives(
+                parameters_list, objectives_list, config
+            )
+        )
         write_data_to_training(reaction_data_path, parameters_encoded)
         write_data_to_training(reaction_data_decoded_path, parameters_decoded)
         print("writing data to training dataset files...")
@@ -366,7 +371,6 @@ def categorical_feature_decoding(
 
     for i in range(len(cat_combo)):
         x = config["categorical"]["values"][i]
-        print(cat_combo[i])
         cat_combo[i] = x[int(cat_combo[i])]
 
     best_combo_with_names = []
