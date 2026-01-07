@@ -99,7 +99,7 @@ class TestFeatureScaling(unittest.TestCase):
         # Test feature scaling of given reaction condition sample from [0,1] to scale of
         # given feature bounds using continous features only.
 
-        samples = np.array([[0.1, 1.0], [0.5, 0.1]])
+        samples = np.array([[0.1, 1.0], [0.5, 0.1], [0.14, 1.0]])
         config = {
             "continuous": {
                 "feature_names": ["feature1", "feature2"],
@@ -109,7 +109,7 @@ class TestFeatureScaling(unittest.TestCase):
             "categorical": {"feature_names": [], "values": []},
         }
         expected_output = pd.DataFrame(
-            {"feature1": [1.0, 5.0], "feature2": [30.0, 21.0]}
+            {"feature1": [1.0, 5.0, 1.4], "feature2": [30.0, 21.0, 30.0]}
         )
 
         result = feature_scaling(samples, config)
