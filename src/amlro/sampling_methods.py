@@ -146,13 +146,21 @@ def feature_scaling(
 
         min_val, max_val = bounds
         resolution = config["continuous"]["resolutions"][i]
+        # sample_scaled = samples[:, i] * (max_val - min_val) + min_val
+
+        # scaled_df[feature_name] = (  # sample_scaled
+        #     np.round(sample_scaled / (resolution * res_factor))
+        #     * resolution
+        #     * res_factor
+        # )
+        grid = np.arange(min_val, max_val + resolution, resolution)
+
+        # scale Sobol/LHS sample to continuous space
         sample_scaled = samples[:, i] * (max_val - min_val) + min_val
 
-        scaled_df[feature_name] = (  # sample_scaled
-            np.round(sample_scaled / (resolution * res_factor))
-            * resolution
-            * res_factor
-        )
+        # snap to nearest grid value
+        idx = np.abs(grid[:, None] - sample_scaled[None, :]).argmin(axis=0)
+        scaled_df[feature_name] = grid[idx]
 
     # Map and scale categorical features
     for i, (values, feature_name) in enumerate(

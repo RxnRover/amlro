@@ -1,6 +1,7 @@
 import os
 from typing import Any, Dict, List
 
+import numpy as np
 import pandas as pd
 
 from amlro.const import REACTION_DATA_FILENAME, TRAINING_COMBO_FILENAME
@@ -113,7 +114,11 @@ def get_next_training_conditions(
         reactions_to_perform_df = training_df
 
     if not reactions_to_perform_df.empty:
-        return reactions_to_perform_df.iloc[0].to_list()
+        reaction_condition_list = [
+            int(x) if isinstance(x, np.int64) else x
+            for x in reactions_to_perform_df.iloc[0].to_list()
+        ]
+        return reaction_condition_list
     else:
         return None
 
