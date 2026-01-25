@@ -11,8 +11,12 @@ class TestGenerateTrainingData(unittest.TestCase):
 
         self.exp_dir = "test_dir"
         self.config = {
-            "continuous": {"feature_names": ["f1", "f2"]},
-            "categorical": {"feature_names": ["f3"]},
+            "continuous": {
+                "feature_names": ["f1", "f2"],
+                "bounds": [(0, 10), (20, 30)],
+                "resolutions": [1.0, 0.5],
+            },
+            "categorical": {"feature_names": ["f3"], "values": [["A", "B"]]},
             "objectives": ["z1"],
         }
         self.reaction_combos = [[0.4, 0.5, "A"], [0.5, 0.5, "B"]]
