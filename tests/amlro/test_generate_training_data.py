@@ -18,6 +18,7 @@ class TestGenerateTrainingData(unittest.TestCase):
             },
             "categorical": {"feature_names": ["f3"], "values": [["A", "B"]]},
             "objectives": ["z1"],
+            "directions": ["max"],
         }
         self.reaction_combos = [[0.4, 0.5, "A"], [0.5, 0.5, "B"]]
         self.training_dataset_path = os.path.join(
