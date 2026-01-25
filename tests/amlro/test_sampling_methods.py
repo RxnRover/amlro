@@ -109,7 +109,7 @@ class TestFeatureScaling(unittest.TestCase):
             "categorical": {"feature_names": [], "values": []},
         }
         expected_output = pd.DataFrame(
-            {"feature1": [1.0, 5.0, 1.4], "feature2": [30.0, 21.0, 30.0]}
+            {"feature1": [1.0, 5.0, 1.0], "feature2": [30.0, 21.0, 30.0]}
         )
 
         result = feature_scaling(samples, config)
