@@ -1,10 +1,12 @@
-from typing import Dict, List
+from typing import Dict, Final, List
 
 import numpy as np
 import pandas as pd
-from pyDOE2 import lhs
+from pyDOE3 import lhs
 from scipy.stats.qmc import Sobol
 from sklearn.utils import resample
+
+SEED: Final[int] = 42
 
 
 def random_sampling(df: pd.DataFrame, sample_size: int = 20) -> pd.DataFrame:
@@ -49,7 +51,11 @@ def latin_hypercube_sampling(
     # Generate LHS samples
     # lhs_samples = lhs(n_features,criterion='center', samples=sample_size)
     lhs_samples = lhs(
-        n=n_features, criterion="maximin", iterations=1000, samples=sample_size
+        n=n_features,
+        criterion="maximin",
+        iterations=1000,
+        samples=sample_size,
+        seed=SEED,
     )
 
     training_df = feature_scaling(lhs_samples, config, res_factor)
