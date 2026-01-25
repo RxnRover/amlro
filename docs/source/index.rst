@@ -53,7 +53,6 @@ Contents
     Overview <readme>
     installation
     quickstart
-    concepts/index
     user_guide/index
     notebooks/index
     Contributions & Help <contributing>
