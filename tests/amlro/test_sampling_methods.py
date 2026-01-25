@@ -104,7 +104,7 @@ class TestFeatureScaling(unittest.TestCase):
             "continuous": {
                 "feature_names": ["feature1", "feature2"],
                 "bounds": [(0, 10), (20, 30)],
-                "resolutions": [1, 0.5],
+                "resolutions": [1.0, 0.5],
             },
             "categorical": {"feature_names": [], "values": []},
         }
@@ -149,7 +149,7 @@ class TestFeatureScaling(unittest.TestCase):
             "continuous": {
                 "feature_names": ["feature1"],
                 "bounds": [(0, 10)],
-                "resolutions": [1],
+                "resolutions": [1.0],
             },
             "categorical": {
                 "feature_names": ["feature2"],
