@@ -23,7 +23,7 @@ class TestGenerateTrainingData(unittest.TestCase):
             self.exp_dir, "reactions_decoded.csv"
         )
 
-    @patch("amlro.generate_training_data.write_data_to_training")
+    @patch("amlro.generate_training_data.write_line_to_a_file")
     @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_itr_0(
@@ -61,7 +61,7 @@ class TestGenerateTrainingData(unittest.TestCase):
         # Since itr = 0, it returns the first combination
         self.assertEqual(result, [0.4, 0.5, "A"])
 
-    @patch("amlro.generate_training_data.write_data_to_training")
+    @patch("amlro.generate_training_data.write_line_to_a_file")
     @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_itr_1(
@@ -97,7 +97,7 @@ class TestGenerateTrainingData(unittest.TestCase):
         # Since itr = 1, it returns the second combination
         self.assertEqual(result, [0.5, 0.5, "B"])
 
-    @patch("amlro.generate_training_data.write_data_to_training")
+    @patch("amlro.generate_training_data.write_line_to_a_file")
     @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_termination(
