@@ -24,7 +24,7 @@ class TestGenerateTrainingData(unittest.TestCase):
         )
 
     @patch("amlro.generate_training_data.write_data_to_training")
-    @patch("amlro.generate_training_data.load_training_combo_file")
+    @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_itr_0(
         self, mock_encoding, mock_load_combo, mock_write
@@ -62,7 +62,7 @@ class TestGenerateTrainingData(unittest.TestCase):
         self.assertEqual(result, [0.4, 0.5, "A"])
 
     @patch("amlro.generate_training_data.write_data_to_training")
-    @patch("amlro.generate_training_data.load_training_combo_file")
+    @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_itr_1(
         self, mock_encoding, mock_load_combo, mock_write
@@ -98,7 +98,7 @@ class TestGenerateTrainingData(unittest.TestCase):
         self.assertEqual(result, [0.5, 0.5, "B"])
 
     @patch("amlro.generate_training_data.write_data_to_training")
-    @patch("amlro.generate_training_data.load_training_combo_file")
+    @patch("amlro.generate_training_data.load_training_conditions")
     @patch("amlro.optimizer.categorical_feature_encoding")
     def test_generate_training_data_termination(
         self, mock_encoding, mock_load_combo, mock_write
