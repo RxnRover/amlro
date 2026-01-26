@@ -74,7 +74,16 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "myst_nb",
 ]
+
+nb_execution_mode = "off"
+# Tell Sphinx that .ipynb files are source files
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".ipynb": "myst-nb",
+    ".myst": "myst-nb",
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

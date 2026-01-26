@@ -41,7 +41,7 @@ Get Started
 
 - :doc:`installation`
 - :doc:`quickstart`
-- :doc:`examples/index`
+- :doc:`tutorials/index`
 - :doc:`api/modules`
 
 Contents
@@ -54,7 +54,7 @@ Contents
     installation
     quickstart
     user_guide/index
-    notebooks/index
+    tutorials/index
     Contributions & Help <contributing>
     License <license>
     Authors <authors>
