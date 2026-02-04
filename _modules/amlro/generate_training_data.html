@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>amlro.generate_training_data &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=02573738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">amlro.generate_training_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for amlro.generate_training_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">REACTION_DATA_FILENAME</span><span class="p">,</span> <span class="n">TRAINING_COMBO_FILENAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">categorical_feature_encoding</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.validations</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_optimizer_config</span>
+
+
+<div class="viewcode-block" id="generate_training_data">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.generate_training_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_training_data</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">obj_values</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">REACTION_DATA_FILENAME</span><span class="p">,</span>
+    <span class="n">termination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a training dataset for the ML model.</span>
+
+<span class="sd">    This function handles the generation of training data point for the optimization</span>
+<span class="sd">    process involving experimental reactions. The function is designed to work</span>
+<span class="sd">    iteratively,where each iteration represents a generate new training reaction.</span>
+<span class="sd">    Depending on the iteration number (`itr`) and the termination flag,</span>
+<span class="sd">    it writes the experimental data to files and provides the</span>
+<span class="sd">    next set of reaction conditions.</span>
+
+<span class="sd">    :param exp_dir: experimental directory for saving data files</span>
+<span class="sd">    :type exp_dir: str</span>
+<span class="sd">    :param config: Dictionary of parameters</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param parameters: Previous experiment parameters or initial parameters,</span>
+<span class="sd">                       defaults to [].</span>
+<span class="sd">    :type parameters: List, optional</span>
+<span class="sd">    :param obj_values: experimental yield from previous experiment.</span>
+<span class="sd">    :type obj_values: List, optional</span>
+<span class="sd">    :param filename: filename for reaction data file, filename for reaction data file,</span>
+<span class="sd">                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.</span>
+<span class="sd">    :type filename: str, optional</span>
+<span class="sd">    :param termination: termination of the training function after last iteration</span>
+<span class="sd">                        without returning next reaction conditions, defaults to False</span>
+<span class="sd">    :type termination: bool, optional</span>
+<span class="sd">    :return: parameter set for next experiment.</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">validate_optimizer_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="n">write_data_to_training_files</span><span class="p">(</span>
+        <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+        <span class="n">obj_values</span><span class="o">=</span><span class="n">obj_values</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">termination</span><span class="p">:</span>
+        <span class="c1"># termination of function without returning reaction conditions</span>
+        <span class="c1"># and complete writing last results to the file.</span>
+        <span class="c1"># should activated in last iteration+1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training set generation completed..&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Reads the training combo file and returns the next reaction conditions.</span>
+    <span class="n">next_conditions</span> <span class="o">=</span> <span class="n">get_next_training_conditions</span><span class="p">(</span>
+        <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">next_conditions</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">next_conditions</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training set generation completed.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_next_training_conditions">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.get_next_training_conditions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_next_training_conditions</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">REACTION_DATA_FILENAME</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns next reaction conditions from the training reaction space.</span>
+
+<span class="sd">    :param exp_dir: experimental directory for saving data files</span>
+<span class="sd">    :type exp_dir: str</span>
+<span class="sd">    :param config: Dictionary of parameters</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param filename: filename for reaction data file, filename for reaction data file,</span>
+<span class="sd">                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.</span>
+<span class="sd">    :type filename: str, optional</span>
+<span class="sd">    :return: parameter set for next experiment.</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">training_combo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">TRAINING_COMBO_FILENAME</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">decoded_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_decoded</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">reaction_data_decoded_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">decoded_filename</span><span class="p">)</span>
+
+    <span class="n">training_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">training_combo_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">reaction_data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">reaction_data_decoded_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">target_columns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">]</span>
+    <span class="n">reaction_data_df</span> <span class="o">=</span> <span class="n">reaction_data_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">target_columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reaction_data_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+
+        <span class="n">reactions_to_perform_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">training_df</span><span class="p">,</span> <span class="n">reaction_data_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">reactions_to_perform_df</span> <span class="o">=</span> <span class="n">reactions_to_perform_df</span><span class="p">[</span>
+            <span class="n">reactions_to_perform_df</span><span class="p">[</span><span class="s2">&quot;_merge&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;left_only&quot;</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;_merge&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reactions_to_perform_df</span> <span class="o">=</span> <span class="n">training_df</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reactions_to_perform_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">reaction_condition_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">reactions_to_perform_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">reaction_condition_list</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="write_data_to_training_files">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.write_data_to_training_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_data_to_training_files</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">obj_values</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">REACTION_DATA_FILENAME</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes experimental reaction data into the reaction data files.</span>
+
+<span class="sd">    :param exp_dir: experimental directory for saving data files</span>
+<span class="sd">    :type exp_dir: str</span>
+<span class="sd">    :param config: Dictionary of parameters</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param filename: filename for reaction data file, filename for reaction data file,</span>
+<span class="sd">                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.</span>
+<span class="sd">    :type filename: str, optional</span>
+<span class="sd">    :param obj_values: experimental yield from previous experiment.</span>
+<span class="sd">    :type obj_values: List, optional</span>
+<span class="sd">    :param filename: filename for reaction data file, defaults to reaction_data.csv.</span>
+<span class="sd">    :type filename: str, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">reaction_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">name</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">decoded_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_decoded</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">reaction_data_decoded_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">decoded_filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reaction_data_path</span><span class="p">):</span>
+        <span class="n">continous_names</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+        <span class="n">cat_names</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+        <span class="n">obj_names</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">]</span>
+
+        <span class="n">col_names</span> <span class="o">=</span> <span class="n">continous_names</span> <span class="o">+</span> <span class="n">cat_names</span> <span class="o">+</span> <span class="n">obj_names</span>
+        <span class="n">col_names</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">col_names</span><span class="p">])</span>
+
+        <span class="n">write_line_to_a_file</span><span class="p">(</span><span class="n">reaction_data_path</span><span class="p">,</span> <span class="n">col_names</span><span class="p">)</span>
+        <span class="n">write_line_to_a_file</span><span class="p">(</span><span class="n">reaction_data_decoded_path</span><span class="p">,</span> <span class="n">col_names</span><span class="p">)</span>
+
+    <span class="c1"># Each iteration (excepts initial itr), previous experimental results and</span>
+    <span class="c1"># conditions are write to the reaction data files.</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="c1"># stop writing if previous reaction data file exists.</span>
+            <span class="k">return</span>
+
+        <span class="n">parameters_encoded</span> <span class="o">=</span> <span class="n">categorical_feature_encoding</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+        <span class="n">prev_parameters</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">obj_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_val</span> <span class="ow">in</span> <span class="n">obj_values</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">prev_parameters_encoded</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">parameters_encoded</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">obj_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_val</span> <span class="ow">in</span> <span class="n">obj_values</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">write_line_to_a_file</span><span class="p">(</span><span class="n">reaction_data_path</span><span class="p">,</span> <span class="n">prev_parameters_encoded</span><span class="p">)</span>
+        <span class="n">write_line_to_a_file</span><span class="p">(</span><span class="n">reaction_data_decoded_path</span><span class="p">,</span> <span class="n">prev_parameters</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;writing data to training dataset files...&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_line_to_a_file">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.write_line_to_a_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_line_to_a_file</span><span class="p">(</span><span class="n">training_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reaction_results</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;writes a data line to a file</span>
+
+<span class="sd">    Writes the prev reaction conditions and experimental objective values</span>
+<span class="sd">    at the end of the training data file.</span>
+
+<span class="sd">    :param training_file: traning set file path</span>
+<span class="sd">    :type training_file: str</span>
+<span class="sd">    :param reaction_results: previous reaction conditions and objective values</span>
+<span class="sd">    :type reaction_results: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Open the file in append &amp; read mode (&#39;a+&#39;) for writes results each iteration</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">training_file</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_object</span><span class="p">:</span>
+        <span class="n">file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">reaction_results</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_training_conditions">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.load_training_conditions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_training_conditions</span><span class="p">(</span>
+    <span class="n">training_combo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">TRAINING_COMBO_FILENAME</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>  <span class="c1"># pragma: no cov</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads the training data.</span>
+
+<span class="sd">    Reads the combination file as pandas data frame and return the</span>
+<span class="sd">    reaction combination data as list.</span>
+
+<span class="sd">    :param training_combo: training parameter combination file path, defaults</span>
+<span class="sd">         to the value of `amlro.const.TRAINING_COMBO_FILE`.</span>
+<span class="sd">    :type training_combo: str</span>
+<span class="sd">    :return: training parameter combination list</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">training_combo</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="write_training_data">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.generate_training_data.write_training_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_training_data</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">objectives</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">],</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">REACTION_DATA_FILENAME</span><span class="p">,</span>
+<span class="p">):</span>  <span class="c1"># pragma: no cov</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;writes the experiment data.</span>
+
+<span class="sd">    This function can be used if we needs to perform all the training conditions</span>
+<span class="sd">    together and write the experimental results together. Batch of training</span>
+<span class="sd">    experiments results/objectives are neded to collected.</span>
+
+<span class="sd">    :param exp_dir: experimental directory for saving data files</span>
+<span class="sd">    :type exp_dir: str</span>
+<span class="sd">    :param objectives: objective values for training reaction conditions</span>
+<span class="sd">    :type objectives: List[List]</span>
+<span class="sd">    :param filename: filename for reaction data file, filename for reaction data file,</span>
+<span class="sd">                     defaults to the value of `amlro.const.REACTION_DATA_FILENAME`.</span>
+<span class="sd">    :type filename: str, optional</span>
+
+<span class="sd">    :raises ValueError: if lengths of training conditions and objectives dont match.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">training_combo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">TRAINING_COMBO_FILENAME</span><span class="p">)</span>
+
+    <span class="n">reaction_conditions_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">training_combo_path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reaction_conditions_df</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">objectives</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Lengths of training conditions and experimental results must match.&quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;Given reaction conditions: </span><span class="si">{}</span><span class="s2">, Given objectives: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">reaction_conditions_df</span><span class="p">),</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">objectives</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">encoded_data</span> <span class="o">=</span> <span class="n">reaction_conditions_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">categorical_feature_encoding</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">tolist</span><span class="p">()),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">encoded_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">encoded_data</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">reaction_conditions_df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="p">)</span>
+
+    <span class="n">objective_values_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">objectives</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">])</span>
+    <span class="n">training_encoded_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">encoded_df</span><span class="p">,</span> <span class="n">objective_values_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">training_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">reaction_conditions_df</span><span class="p">,</span> <span class="n">objective_values_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="n">training_dataset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">decoded_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_decoded</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">training_dataset_decoded_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">decoded_filename</span><span class="p">)</span>
+    <span class="c1"># file writing</span>
+    <span class="n">training_encoded_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+        <span class="n">training_dataset_path</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.5f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">training_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+        <span class="n">training_dataset_decoded_path</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.5f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

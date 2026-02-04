@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Learning Optimization &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02573738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="AMLRO Tutorials" href="../tutorials/index.html" />
+    <link rel="prev" title="Training Data Generation" href="training_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configurations.html">Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reaction_space.html">Reaction Space Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_data.html">Generate Training Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Active Learning Prediction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entry-point-function">Entry-Point Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generated-output">Generated Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-loop-optimization">Open-Loop Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interactive-interfaces">Interactive Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#closed-loop-optimization-autonomous">Closed-Loop Optimization (Autonomous)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#minimal-closed-loop-example">Minimal Closed-Loop Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-size-and-budget">Batch Size and Budget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relationship-to-the-amlro-workflow">Relationship to the AMLRO Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Active Learning Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/active_learning.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="active-learning-optimization">
+<span id="active-learning"></span><h1>Active Learning Optimization<a class="headerlink" href="#active-learning-optimization" title="Link to this heading"></a></h1>
+<p>Once an initial training dataset is available, AMLRO can be used to <strong>predict
+optimal reaction conditions</strong> and iteratively refine them through active
+learning.</p>
+<p>This step closes the optimization loop by combining: - Machine learning model
+training - Prediction over the full reaction space - Selection of the next batch
+of experiments</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The active learning stage assumes that:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code> already exists</p></li>
+<li><p>filename can be defined by user and default is <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code></p></li>
+<li><p>Feature and objective columns match the configuration</p></li>
+<li><p>At least one round of experimental or computational feedback has been
+collected</p></li>
+</ul>
+<p>From this point onward, AMLRO repeatedly: 1. Trains an ML model on available
+data 2. Predicts objective values for all candidate reactions 3. Selects the
+best next batch of conditions 4. Waits for user feedback (open-loop) or computes
+objectives (closed-loop)</p>
+</section>
+<section id="entry-point-function">
+<h2>Entry-Point Function<a class="headerlink" href="#entry-point-function" title="Link to this heading"></a></h2>
+<p>The active learning process is accessed through a single entry-point:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">get_optimized_parameters</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">parameters_list</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+    <span class="n">objectives_list</span><span class="o">=</span><span class="n">objectives</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;reactions_data.csv&quot;</span><span class="p">,</span>
+    <span class="n">termination</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This function can be called <strong>iteratively</strong> to perform multi-round optimization.</p>
+</section>
+<section id="generated-output">
+<h2>Generated Output<a class="headerlink" href="#generated-output" title="Link to this heading"></a></h2>
+<p>Each call to <code class="docutils literal notranslate"><span class="pre">get_optimized_parameters</span></code>:</p>
+<ul class="simple">
+<li><p>Trains an ML model using <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code></p></li>
+<li><p>Predicts objective values for the full reaction space</p></li>
+<li><p>Selects the next batch of reaction conditions</p></li>
+<li><p>Appends results from the previous round (if provided)</p></li>
+</ul>
+</section>
+<section id="open-loop-optimization">
+<h2>Open-Loop Optimization<a class="headerlink" href="#open-loop-optimization" title="Link to this heading"></a></h2>
+<p>In open-loop scenarios, experiments or simulations must be performed externally
+between optimization cycles.</p>
+<section id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>AMLRO suggests a batch of reaction conditions</p></li>
+<li><p>User performs experiments or simulations</p></li>
+<li><p>Objective values are collected</p></li>
+<li><p>Results are written back to <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code></p></li>
+<li><p>AMLRO is called again to suggest the next batch</p></li>
+</ol>
+<p>This process continues until satisfactory performance is achieved.</p>
+</section>
+<section id="interactive-interfaces">
+<h3>Interactive Interfaces<a class="headerlink" href="#interactive-interfaces" title="Link to this heading"></a></h3>
+<p>To avoid manual file editing, users are encouraged to use:</p>
+<ul class="simple">
+<li><p>intercative Google Colab notebook</p></li>
+<li><p>Programmatic CSV updates</p></li>
+<li><p>Future web interfaces or lab automation tools</p></li>
+</ul>
+<p>AMLRO does not require a specific interface, only correctly formatted data.</p>
+</section>
+</section>
+<section id="closed-loop-optimization-autonomous">
+<h2>Closed-Loop Optimization (Autonomous)<a class="headerlink" href="#closed-loop-optimization-autonomous" title="Link to this heading"></a></h2>
+<p>For benchmarks, simulations, or automated pipelines, AMLRO supports fully
+closed-loop optimization with a fixed evaluation budget.</p>
+<p>In this mode: - Objective values are computed computationaly or feedback
+autonomus experiments setup - Optimization proceeds without user intervention -
+A predefined budget controls termination</p>
+<section id="minimal-closed-loop-example">
+<h3>Minimal Closed-Loop Example<a class="headerlink" href="#minimal-closed-loop-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">objectives</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">budget</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">budget</span><span class="p">):</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">get_optimized_parameters</span><span class="p">(</span>
+        <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">parameters_list</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+        <span class="n">objectives_list</span><span class="o">=</span><span class="n">objectives</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># should be handle correctly with batch size and MO criteria [[],[]]</span>
+    <span class="n">objectives</span> <span class="o">=</span> <span class="n">objective_function</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+
+<span class="n">get_optimized_parameters</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">parameters_list</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+    <span class="n">objectives_list</span><span class="o">=</span><span class="n">objectives</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">termination</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="explanation">
+<h3>Explanation<a class="headerlink" href="#explanation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Each iteration selects a new batch of reaction conditions</p></li>
+<li><p>Objective values are collected automatically</p></li>
+<li><p>Results are appended to the training dataset</p></li>
+<li><p>The final call with <code class="docutils literal notranslate"><span class="pre">termination=True</span></code> ensures clean shutdown and final data
+persistence</p></li>
+</ul>
+<p>This setup is suitable for: - Analytical test functions (e.g., Branin) -
+High-throughput experiments - Algorithm benchmarking</p>
+</section>
+</section>
+<section id="batch-size-and-budget">
+<h2>Batch Size and Budget<a class="headerlink" href="#batch-size-and-budget" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code> controls how many reaction conditions are suggested per
+iteration</p></li>
+<li><p>The optimization budget is controlled externally (e.g., loop length)</p></li>
+<li><p>AMLRO does not enforce a stopping criterion by default</p></li>
+</ul>
+<p>Users may stop optimization based on: - Objective convergence - Experimental
+constraints - Resource limits</p>
+</section>
+<section id="relationship-to-the-amlro-workflow">
+<h2>Relationship to the AMLRO Workflow<a class="headerlink" href="#relationship-to-the-amlro-workflow" title="Link to this heading"></a></h2>
+<p>Active learning is the final stage of AMLRO and depends on:</p>
+<ul class="simple">
+<li><p>Reaction space generation</p></li>
+<li><p>Training data generation</p></li>
+<li><p>User-provided objective feedback</p></li>
+</ul>
+<p>Together, these three stages form a complete <strong>iterative reaction optimization
+framework</strong>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="training_data.html" class="btn btn-neutral float-left" title="Training Data Generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="AMLRO Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

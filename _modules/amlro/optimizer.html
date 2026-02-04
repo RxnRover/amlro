@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>amlro.optimizer &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=02573738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">amlro.optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for amlro.optimizer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">ShuffleSplit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.multioutput</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiOutputRegressor</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">FULL_COMBO_FILENAME</span><span class="p">,</span> <span class="n">REACTION_DATA_FILENAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.ml_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_regressor_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.pareto</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_pareto_front</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">amlro.validations</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_optimizer_config</span>
+
+<span class="c1"># random seed for define random state of ML models</span>
+<span class="n">SEED</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span>
+
+
+<div class="viewcode-block" id="load_data">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.load_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span>
+    <span class="n">reactions_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">combination_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loading dataset files</span>
+
+<span class="sd">    Reads the training set file and all combination file as pandas data</span>
+<span class="sd">    frames and split into x train , y train and test datasets. When loading</span>
+<span class="sd">    the combination file, data rows will be deleted if they are included</span>
+<span class="sd">    in training file.</span>
+
+<span class="sd">    :param training_file: path to the training set file.</span>
+<span class="sd">    :type training_file: str</span>
+<span class="sd">    :param combination_file: path to the combination file.</span>
+<span class="sd">    :type combination_file: str</span>
+<span class="sd">    :param config: Dictionary of optimizer parameters.</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :return: x and y training datasets and test dataset.</span>
+<span class="sd">    :rtype: Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">reactions_data</span><span class="p">)</span>
+
+    <span class="n">target_columns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">]</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">target_columns</span><span class="p">]</span>
+
+    <span class="n">x_train</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">target_columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">combination_file</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">x_train</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">x_train</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">(),</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;_merge&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;left_only&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;_merge&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="model_training">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.model_training">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">model_training</span><span class="p">(</span>
+    <span class="n">x_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gb&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Train the regressor model and return the best model.</span>
+
+<span class="sd">    :param x_train: training dataset that contains feature values.</span>
+<span class="sd">    :type x_train: pd.Dataframe</span>
+<span class="sd">    :param y_train: target dataframe that contains objective values.</span>
+<span class="sd">    :type y_train: pd.Dataframe</span>
+<span class="sd">    :param model: Regressor model name.</span>
+<span class="sd">        Valid options: &#39;ela_net&#39;, &#39;dtree&#39;, &#39;rf&#39;, &#39;gb&#39;, &#39;xgb&#39;, &#39;aboost&#39;, &#39;svr&#39;, &#39;knn&#39;,</span>
+<span class="sd">        &#39;bayesian_ridge&#39;. Default is &#39;gb&#39; (Gradient Boosting).</span>
+<span class="sd">    :type model: str</span>
+<span class="sd">    :return: trained regressor model</span>
+<span class="sd">    :rtype: model object with a `predict` method (e.g., sklearn regressor)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># instead shufflesplit we can use  KFold(n_splits=5, shuffle=True)</span>
+    <span class="c1"># or RepeatedKFold(n_splits=5, n_repeats=3).</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">kfold</span> <span class="o">=</span> <span class="n">ShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+
+    <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">get_regressor_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">SEED</span><span class="p">)</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+        <span class="n">estimator</span><span class="o">=</span><span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">6</span>
+    <span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
+
+    <span class="k">return</span> <span class="n">regr</span></div>
+
+
+
+<div class="viewcode-block" id="mo_model_training">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.mo_model_training">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mo_model_training</span><span class="p">(</span>
+    <span class="n">x_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gb&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Train the multi output regressor model and return the best model.</span>
+
+<span class="sd">    :param x_train: training dataset that contains feature values.</span>
+<span class="sd">    :type x_train: pd.Dataframe</span>
+<span class="sd">    :param y_train: target dataframe that contains objective values.</span>
+<span class="sd">    :type y_train: pd.Dataframe</span>
+<span class="sd">    :param model: Regressor model name.</span>
+<span class="sd">        Valid options: &#39;ela_net&#39;, &#39;dtree&#39;, &#39;rf&#39;, &#39;gb&#39;, &#39;xgb&#39;, &#39;aboost&#39;, &#39;svr&#39;, &#39;knn&#39;,</span>
+<span class="sd">        &#39;bayesian_ridge&#39;. Default is &#39;gb&#39; (Gradient Boosting).</span>
+<span class="sd">    :type model: str</span>
+<span class="sd">    :return: trained regressor model</span>
+<span class="sd">    :rtype:  model object with a `predict` method (e.g., sklearn regressor)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">kfold</span> <span class="o">=</span> <span class="n">ShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+
+    <span class="c1"># base regressor model</span>
+    <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">get_regressor_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">SEED</span><span class="p">)</span>
+
+    <span class="c1"># multi objective regressor model</span>
+    <span class="n">mo_regr</span> <span class="o">=</span> <span class="n">MultiOutputRegressor</span><span class="p">(</span><span class="n">regr</span><span class="p">)</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_jobs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+        <span class="n">estimator</span><span class="o">=</span><span class="n">mo_regr</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">6</span>
+    <span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">mo_regr</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
+
+    <span class="k">return</span> <span class="n">mo_regr</span></div>
+
+
+
+<div class="viewcode-block" id="predict_next_parameters">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.predict_next_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_next_parameters</span><span class="p">(</span>
+    <span class="n">regr</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Predicts the yield from all the combination data using a trained</span>
+<span class="sd">    regressor model and return the best combinations.</span>
+
+<span class="sd">    The function handles both single-objective and multi-objective optimization.</span>
+<span class="sd">    In the single-objective case, it sorts the predicted results based on the</span>
+<span class="sd">    specified direction (maximization or minimization).</span>
+<span class="sd">    In the multi-objective case, it identifies the Pareto front and ranks solutions</span>
+<span class="sd">    by computing weighted sums of normalized objectives. Weights are defined as</span>
+<span class="sd">    -1 for min and +1 for max.</span>
+
+<span class="sd">    :param regr: trained regressor model</span>
+<span class="sd">    :type regr: model object with a `predict` method (e.g., sklearn regressor)</span>
+<span class="sd">    :param data: test dataset that contains full reaction space</span>
+<span class="sd">    :type data: pd.Dataframe</span>
+<span class="sd">    :param config: Dictionary of optimizer parameters</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param batch_size: Number of reactions conditions need as predictions</span>
+<span class="sd">        defaults to 1.</span>
+<span class="sd">    :type batch_size: int, optional</span>
+<span class="sd">    :return: batch of best predicted parameter</span>
+<span class="sd">    :rtype: pd.Dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">])</span>
+
+    <span class="n">prediction_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">pred</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+            <span class="n">best_parameters</span> <span class="o">=</span> <span class="n">prediction_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+                <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+            <span class="n">best_parameters</span> <span class="o">=</span> <span class="n">prediction_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+                <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">]</span>
+
+        <span class="n">best_parameters</span> <span class="o">=</span> <span class="n">best_parameters</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">nfeatures</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">dir</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">]]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Identify Pareto front</span>
+        <span class="n">pareto_front</span> <span class="o">=</span> <span class="n">identify_pareto_front</span><span class="p">(</span>
+            <span class="n">prediction_df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;directions&quot;</span><span class="p">],</span> <span class="n">nfeatures</span>
+        <span class="p">)</span>
+
+        <span class="c1"># finding the weighted sum of objective values for pareto solutions</span>
+        <span class="n">normalized_front</span> <span class="o">=</span> <span class="p">(</span><span class="n">pareto_front</span> <span class="o">-</span> <span class="n">pareto_front</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">pareto_front</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">pareto_front</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">weighted_sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">normalized_front</span><span class="p">[:,</span> <span class="n">nfeatures</span><span class="p">:]</span> <span class="o">*</span> <span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="n">num_solutions</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pareto_front</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="c1"># Get the indices of the top `num_solutions` weighted sums</span>
+        <span class="n">best_indexs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">weighted_sums</span><span class="p">)[</span><span class="o">-</span><span class="n">num_solutions</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">best_solutions</span> <span class="o">=</span> <span class="n">pareto_front</span><span class="p">[</span><span class="n">best_indexs</span><span class="p">]</span>
+        <span class="n">best_parameters</span> <span class="o">=</span> <span class="n">best_solutions</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nfeatures</span><span class="p">]</span>
+
+        <span class="n">best_parameters</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">best_parameters</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">best_parameters</span></div>
+
+
+
+<div class="viewcode-block" id="get_optimized_parameters">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.get_optimized_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_optimized_parameters</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">parameters_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[]],</span>
+    <span class="n">objectives_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[]],</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gb&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">REACTION_DATA_FILENAME</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">termination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trains a machine learning model using the provided training data and</span>
+<span class="sd">    configuration, then predicts and retrieves the next best reaction</span>
+<span class="sd">    parameters based on the optimization objectives.</span>
+<span class="sd">    Then, writes the training data and predictions to files.</span>
+
+<span class="sd">    :param exp_dir: experimental directory for saving data files</span>
+<span class="sd">    :type exp_dir: str</span>
+<span class="sd">    :param config: Configuration dictionary specifying features, objectives,</span>
+<span class="sd">        directions, and other settings for optimizer.</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param parameters_list: List of reaction conditions for training,</span>
+<span class="sd">        defaults to [[]].</span>
+<span class="sd">    :type parameters_list: List[List], optional</span>
+<span class="sd">    :param objectives_list: List of objective values corresponding to the reaction</span>
+<span class="sd">        conditions, defaults to [[]].</span>
+<span class="sd">    :type objectives_list: List[List], optional</span>
+<span class="sd">    :param model: The machine learning model type to use, e.g., &#39;gb&#39; for Gradient</span>
+<span class="sd">        Boosting, defaults to &#39;gb&#39;.</span>
+<span class="sd">    :type model: str, optional</span>
+<span class="sd">    :param filename: The name of the file where reaction data is stored,</span>
+<span class="sd">        defaults to REACTION_DATA_FILENAME.</span>
+<span class="sd">    :type filename: str, optional</span>
+<span class="sd">    :param batch_size: The number of best reaction conditions to return,</span>
+<span class="sd">        defaults to 1.</span>
+<span class="sd">    :type batch_size: int, optional</span>
+<span class="sd">    :param termination: If True, the function will terminate early after saving</span>
+<span class="sd">        data, defaults to False.</span>
+<span class="sd">    :type termination: bool, optional</span>
+<span class="sd">    :return: A list of lists containing the next predicted reaction conditions.</span>
+<span class="sd">    :rtype: List[List]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">validate_optimizer_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="c1"># Encode and decode the provided parameters and objectives and</span>
+    <span class="c1"># make a str for writes.</span>
+
+    <span class="c1"># File paths for saving training data and decoded data</span>
+    <span class="n">reaction_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">decoded_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_decoded</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">reaction_data_decoded_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">decoded_filename</span><span class="p">)</span>
+    <span class="n">full_combo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp_dir</span><span class="p">,</span> <span class="n">FULL_COMBO_FILENAME</span><span class="p">)</span>
+
+    <span class="c1"># Write encoded and decoded parameter-objective combinations to file</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">parameters_encoded</span><span class="p">,</span> <span class="n">parameters_decoded</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">stringify_parameters_objectives</span><span class="p">(</span>
+                <span class="n">parameters_list</span><span class="p">,</span> <span class="n">objectives_list</span><span class="p">,</span> <span class="n">config</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">write_data_to_training</span><span class="p">(</span><span class="n">reaction_data_path</span><span class="p">,</span> <span class="n">parameters_encoded</span><span class="p">)</span>
+        <span class="n">write_data_to_training</span><span class="p">(</span><span class="n">reaction_data_decoded_path</span><span class="p">,</span> <span class="n">parameters_decoded</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;writing data to training dataset files...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Exit early if termination flag is set</span>
+    <span class="k">if</span> <span class="n">termination</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Load training data and full reaction space</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span>
+        <span class="n">reaction_data_path</span><span class="p">,</span> <span class="n">full_combo_path</span><span class="p">,</span> <span class="n">config</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data Loading for Machine Learning Model...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training ML model &quot;</span> <span class="o">+</span> <span class="n">model</span> <span class="o">+</span> <span class="s2">&quot; ...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Train the correct ml model for single or multi objective optimization.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;objectives&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">regr</span> <span class="o">=</span> <span class="n">model_training</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">regr</span> <span class="o">=</span> <span class="n">mo_model_training</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+    <span class="c1"># Predict the next best reaction conditions.</span>
+    <span class="n">best_combo</span> <span class="o">=</span> <span class="n">predict_next_parameters</span><span class="p">(</span><span class="n">regr</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="c1"># Decode the best reaction conditions.</span>
+    <span class="n">next_best_conditions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">conditions</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">conditions_list</span> <span class="o">=</span> <span class="n">conditions</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">next_best_conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">categorical_feature_decoding</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">conditions_list</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best parameter combination...&quot;</span><span class="p">,</span> <span class="n">next_best_conditions</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">next_best_conditions</span></div>
+
+
+
+<div class="viewcode-block" id="stringify_parameters_objectives">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.stringify_parameters_objectives">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">stringify_parameters_objectives</span><span class="p">(</span>
+    <span class="n">parameters_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">],</span> <span class="n">objectives_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine reaction parameters and respective objectives values</span>
+<span class="sd">    as a comma sepearated string for writing into reaction data file.</span>
+
+<span class="sd">    Convert parameters and their respective objective values into</span>
+<span class="sd">    comma-separated strings, both encoded and decoded, for writing into a</span>
+<span class="sd">    reaction data file. The function encodes categorical features based on</span>
+<span class="sd">    the provided configuration.</span>
+
+<span class="sd">    :param parameters_list: A list of reaction conditions, where each condition</span>
+<span class="sd">        is a list of parameter values.</span>
+<span class="sd">    :type parameters_list: List[List]</span>
+<span class="sd">    :param objectives_list: A list of objective values where list of corrosponding</span>
+<span class="sd">        objective values for each reaction condition.</span>
+<span class="sd">    :type objectives_list: List[List]</span>
+<span class="sd">    :param config: Dictionary of optimizer parameters</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :return: Two lists of strings: (1) the parameters with encoded categorical</span>
+<span class="sd">        features combined with objective values, and (2) the original</span>
+<span class="sd">        (decoded) parameter values combined with objective values.</span>
+<span class="sd">    :rtype: Tuple[List[str], List[str]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">parameters_encoded</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">parameters_decoded</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">objectives</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">parameters_list</span><span class="p">,</span> <span class="n">objectives_list</span><span class="p">):</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">categorical_feature_encoding</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="n">parameters_encoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">encoded</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">obj_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_val</span> <span class="ow">in</span> <span class="n">objectives</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">parameters_decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">])</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">obj_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_val</span> <span class="ow">in</span> <span class="n">objectives</span><span class="p">])</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parameters_encoded</span><span class="p">,</span> <span class="n">parameters_decoded</span></div>
+
+
+
+<div class="viewcode-block" id="categorical_feature_decoding">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.categorical_feature_decoding">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">categorical_feature_decoding</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">best_combo</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This method converts encoded parameter list into decoded list.</span>
+<span class="sd">    Convert categorical feature values back into its names.</span>
+
+<span class="sd">    :param config: Initial reaction feature configurations</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param best_combo: parameter list required for decoding</span>
+<span class="sd">    :type best_combo: List[Any]</span>
+<span class="sd">    :return: Decoded parameter list</span>
+<span class="sd">    :rtype: List[Any]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">numerical_feature_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">])</span>
+    <span class="n">numerical_combo</span> <span class="o">=</span> <span class="n">best_combo</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numerical_feature_count</span><span class="p">]</span>
+    <span class="n">cat_combo</span> <span class="o">=</span> <span class="n">best_combo</span><span class="p">[</span><span class="n">numerical_feature_count</span><span class="p">:]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cat_combo</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cat_combo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cat_combo</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+
+    <span class="n">best_combo_with_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">best_combo_with_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">numerical_combo</span><span class="p">]</span>
+    <span class="p">[</span><span class="n">best_combo_with_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">cat_combo</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">best_combo_with_names</span></div>
+
+
+
+<div class="viewcode-block" id="categorical_feature_encoding">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.categorical_feature_encoding">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">categorical_feature_encoding</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">prev_parameters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This method converts decoded parameter list into encoded list.</span>
+<span class="sd">    Convert categorical feature values into its numerical values.</span>
+
+<span class="sd">    :param config: Initial reaction feature configurations</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param prev_parameters: parameter list required for encoding</span>
+<span class="sd">    :type prev_parameters: List[Any]</span>
+<span class="sd">    :return: encoded parameter list</span>
+<span class="sd">    :rtype: List[Any]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">numerical_feature_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">])</span>
+    <span class="n">numerical_combo</span> <span class="o">=</span> <span class="n">prev_parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numerical_feature_count</span><span class="p">]</span>
+    <span class="n">cat_combo</span> <span class="o">=</span> <span class="n">prev_parameters</span><span class="p">[</span><span class="n">numerical_feature_count</span><span class="p">:]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cat_combo</span><span class="p">)):</span>
+        <span class="n">cat_list</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cat_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">cat_list</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">cat_combo</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">cat_combo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">prev_parameters_encode</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">prev_parameters_encode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">numerical_combo</span><span class="p">]</span>
+    <span class="p">[</span><span class="n">prev_parameters_encode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">cat_combo</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">prev_parameters_encode</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_data_to_training">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.optimizer.write_data_to_training">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_data_to_training</span><span class="p">(</span>
+    <span class="n">training_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parameter_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;writing the prev best predicted combination and</span>
+<span class="sd">    experimental yield at the end of the training set file.</span>
+
+<span class="sd">    :param training_file: traning set file path</span>
+<span class="sd">    :type training_file: str</span>
+<span class="sd">    :param prev_parameters: previous best combo and yield</span>
+<span class="sd">    :type prev_parameters: List[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Open the file in append &amp; read mode (&#39;a+&#39;)</span>
+    <span class="k">for</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">parameter_list</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">training_file</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_object</span><span class="p">:</span>
+            <span class="n">file_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">parameters</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

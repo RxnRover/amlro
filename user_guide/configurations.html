@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02573738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reaction Space Generation" href="reaction_space.html" />
+    <link rel="prev" title="User Guide" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configurations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minimal-configuration-template">Minimal Configuration Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-sections">Configuration Sections</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#continuous-parameters">Continuous Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#categorical-parameters">Categorical Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#objectives-and-directions">Objectives and Directions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#relationship-to-the-amlro-workflow">Relationship to the AMLRO Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reaction_space.html">Reaction Space Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_data.html">Generate Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning Prediction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/configurations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration">
+<span id="configurations"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
+<p>This section describes the <strong>AMLRO configuration dictionary</strong>, which defines the
+reaction search space, objectives. All AMLRO workflows rely on this
+configuration as the <strong>single source of truth</strong> for reaction space generation,
+training data handling, and active learning.</p>
+<p>AMLRO is designed so that users <strong>do not need to modify optimization logic,
+models, or acquisition strategies</strong>. Instead, all behavior is controlled through
+this configuration dictionary and three high-level entry-point functions.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The configuration dictionary specifies:</p>
+<ul class="simple">
+<li><p>Continuous reaction parameters (bounds, resolution, names)</p></li>
+<li><p>Categorical reaction parameters (explicit value lists)</p></li>
+<li><p>Optimization objectives and directions</p></li>
+</ul>
+<p>A minimal configuration dictionary <strong>must contain all required keys</strong>, even if
+some sections (e.g., categorical variables) are empty.</p>
+</section>
+<section id="minimal-configuration-template">
+<h2>Minimal Configuration Template<a class="headerlink" href="#minimal-configuration-template" title="Link to this heading"></a></h2>
+<p>The following example shows the <strong>required structure only</strong>. Values are
+placeholders and should be replaced by user-defined settings.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;continuous&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;bounds&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;resolutions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">step_size</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;feature_1&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[]},</span>
+    <span class="s2">&quot;objectives&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;objective_1&quot;</span><span class="p">,</span> <span class="s2">&quot;objective_2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">&quot;directions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Even if no categorical variables are used, the <code class="docutils literal notranslate"><span class="pre">categorical</span></code> block <strong>must
+still be present</strong> with empty lists.</p>
+</div>
+</section>
+<section id="configuration-sections">
+<h2>Configuration Sections<a class="headerlink" href="#configuration-sections" title="Link to this heading"></a></h2>
+<section id="continuous-parameters">
+<h3>Continuous Parameters<a class="headerlink" href="#continuous-parameters" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">continuous</span></code> block defines numerical reaction parameters such as
+temperature, time, concentration, voltage, or flow rate.</p>
+<p>Required keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bounds</span></code> A list of <code class="docutils literal notranslate"><span class="pre">[min,</span> <span class="pre">max]</span></code> pairs defining the allowed range for each
+parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolutions</span></code> Step sizes used to discretize each continuous parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">feature_names</span></code> Human-readable names for each parameter. These names become
+column headers in all generated CSV files.</p></li>
+</ul>
+<p>Discretization controls the <strong>granularity of the reaction grid</strong>, balancing
+combinatorial explosion against practical experimental resolution.</p>
+</section>
+<section id="categorical-parameters">
+<h3>Categorical Parameters<a class="headerlink" href="#categorical-parameters" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">categorical</span></code> block defines discrete reaction parameters such as solvent,
+catalyst, base, or ligand identity.</p>
+<p>Required keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">feature_names</span></code> Names of categorical parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">values</span></code> A list of value lists corresponding to each categorical parameter.</p></li>
+</ul>
+<p>Example structure (format only):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;category_1&quot;</span><span class="p">,</span> <span class="s2">&quot;category_2&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;value_a&quot;</span><span class="p">,</span> <span class="s2">&quot;value_b&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;value_x&quot;</span><span class="p">,</span> <span class="s2">&quot;value_y&quot;</span><span class="p">]],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If categorical parameters are used, AMLRO internally encodes them as integers
+(<code class="docutils literal notranslate"><span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">...</span></code>) according to their order in <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+</section>
+<section id="objectives-and-directions">
+<h3>Objectives and Directions<a class="headerlink" href="#objectives-and-directions" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">objectives</span></code> list defines the names of experimental or simulated outcomes
+to be optimized.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">directions</span></code> list specifies whether each objective should be minimized or
+maximized.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">objectives</span></code> and <code class="docutils literal notranslate"><span class="pre">directions</span></code> <strong>must have the same length</strong></p></li>
+<li><p>Allowed direction values are <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code></p></li>
+</ul>
+</div>
+<p>Objective names become column headers in all training and reaction data files.</p>
+</section>
+</section>
+<section id="relationship-to-the-amlro-workflow">
+<h2>Relationship to the AMLRO Workflow<a class="headerlink" href="#relationship-to-the-amlro-workflow" title="Link to this heading"></a></h2>
+<p>This configuration dictionary is used by all three AMLRO entry-point functions:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_reaction_scope</span></code> Generates the full reaction space and initial training
+conditions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_training_data</span></code> Manages experimental or simulated feedback and
+training dataset construction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_optimized_parameters</span></code> Performs active learning–based prediction and
+batch selection.</p></li>
+</ol>
+<p>Users interact <strong>only</strong> with these functions and the configuration dictionary;
+all optimization logic, multi-objective handling, and model training are managed
+internally by AMLRO.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reaction_space.html" class="btn btn-neutral float-right" title="Reaction Space Generation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

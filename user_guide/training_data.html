@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Data Generation &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02573738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Active Learning Optimization" href="active_learning.html" />
+    <link rel="prev" title="Reaction Space Generation" href="reaction_space.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configurations.html">Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reaction_space.html">Reaction Space Generation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Generate Training Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entry-point-function">Entry-Point Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generated-files">Generated Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-loop-workflow-manual-update">Open-Loop Workflow (Manual Update)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-format-requirements">File Format Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-open-loop-workflows">Interactive Open-Loop Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#closed-loop-workflow-automated-benchmarking">Closed-Loop Workflow (Automated / Benchmarking)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#minimal-closed-loop-example">Minimal Closed-Loop Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#relationship-to-the-amlro-workflow">Relationship to the AMLRO Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning Prediction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Training Data Generation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/training_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="training-data-generation">
+<span id="training-data"></span><h1>Training Data Generation<a class="headerlink" href="#training-data-generation" title="Link to this heading"></a></h1>
+<p>This section describes how AMLRO incorporates <strong>experimental or computational
+feedback</strong> to build the training dataset used for active learning.</p>
+<p>This step bridges <strong>reaction space definition</strong> and <strong>model-driven optimization</strong>.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>After generating the initial reaction conditions (<code class="docutils literal notranslate"><span class="pre">training_combo.csv</span></code>),
+objective values must be provided before AMLRO can train a model.</p>
+<p>The training data generation step:</p>
+<ul class="simple">
+<li><p>Collects reaction conditions and objective values</p></li>
+<li><p>Builds a cumulative training dataset</p></li>
+<li><p>Supports both <strong>open-loop</strong> (manual/inetractive notebook) and <strong>closed-loop</strong> (automated) workflows</p></li>
+</ul>
+<p>This functionality is accessed through the <code class="docutils literal notranslate"><span class="pre">generate_training_data</span></code> entry-point
+function.</p>
+</section>
+<section id="entry-point-function">
+<h2>Entry-Point Function<a class="headerlink" href="#entry-point-function" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_training_data</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+    <span class="n">obj_values</span><span class="o">=</span><span class="n">objectives</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;reactions_data.csv&#39;</span><span class="p">,</span>
+    <span class="n">termination</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This function is designed to be called <strong>iteratively</strong>, once objective values
+become available.</p>
+</section>
+<section id="generated-files">
+<h2>Generated Files<a class="headerlink" href="#generated-files" title="Link to this heading"></a></h2>
+<p>During training data generation, AMLRO creates or updates the following files
+inside <code class="docutils literal notranslate"><span class="pre">exp_dir</span></code>, filename can be defined by user and default is <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code>
+Encoded dataset used for machine learning model training</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reactions_data_decoded.csv</span></code>
+Human-readable version of the training dataset</p></li>
+</ul>
+<p>These files grow incrementally as new experimental or computational results
+are added.</p>
+</section>
+<section id="open-loop-workflow-manual-update">
+<h2>Open-Loop Workflow (Manual Update)<a class="headerlink" href="#open-loop-workflow-manual-update" title="Link to this heading"></a></h2>
+<p>This option is recommended for <strong>experimental workflows</strong> or expensive
+simulations where objective values are not available programmatically.</p>
+<section id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Perform experiments or simulations for the conditions listed in
+<code class="docutils literal notranslate"><span class="pre">training_combo.csv</span></code></p></li>
+<li><p>Manually create or update <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code></p></li>
+<li><p>Proceed to active learning once sufficient data is available</p></li>
+</ol>
+</section>
+<section id="file-format-requirements">
+<h3>File Format Requirements<a class="headerlink" href="#file-format-requirements" title="Link to this heading"></a></h3>
+<p>When creating or editing <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code> manually:</p>
+<ul class="simple">
+<li><p>Include <strong>only</strong>:
+- Feature columns defined in <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;feature_names&quot;]</span></code>
+- Feature columns defined in <code class="docutils literal notranslate"><span class="pre">config[&quot;categorical&quot;][&quot;feature_names&quot;]</span></code>
+- Objective columns defined in <code class="docutils literal notranslate"><span class="pre">config[&quot;objectives&quot;]</span></code></p></li>
+<li><p>Do <strong>not</strong> include additional columns</p></li>
+<li><p>Categorical variables must be encoded as integer indices
+corresponding to their order in <code class="docutils literal notranslate"><span class="pre">config[&quot;categorical&quot;][&quot;values&quot;]</span></code></p></li>
+<li><p>Also create a <code class="docutils literal notranslate"><span class="pre">reactions_data_decoded.csv</span></code> file including reaction data with actual categorical values.</p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The column names and ordering must match the configuration exactly.
+AMLRO does not perform automatic column reconciliation.</p>
+</div>
+<p>Open-loop workflows allow AMLRO to be used with laboratory notebooks,
+external data acquisition systems, or third-party simulation pipelines.</p>
+</section>
+</section>
+<section id="interactive-open-loop-workflows">
+<h2>Interactive Open-Loop Workflows<a class="headerlink" href="#interactive-open-loop-workflows" title="Link to this heading"></a></h2>
+<p>AMLRO is designed to support <strong>interactive optimization workflows</strong>
+without requiring manual editing of CSV files.</p>
+<p>This is achieved by separating:</p>
+<ul class="simple">
+<li><p>The <strong>AMLRO backend</strong> (reaction space, training data, optimization)</p></li>
+<li><p>Uxsing <strong>interactive frontends</strong> - Interactive Google Colab notebook.</p></li>
+</ul>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>Local web-based interface will be released near future.</p>
+</section>
+<section id="closed-loop-workflow-automated-benchmarking">
+<h2>Closed-Loop Workflow (Automated / Benchmarking)<a class="headerlink" href="#closed-loop-workflow-automated-benchmarking" title="Link to this heading"></a></h2>
+<p>For simulations, benchmarks, or algorithm development, AMLRO supports
+a <strong>fully automated closed-loop setup</strong>.</p>
+<p>In this mode, objective values are computed programmatically and fed
+back into AMLRO in each iteration.</p>
+<section id="minimal-closed-loop-example">
+<h3>Minimal Closed-Loop Example<a class="headerlink" href="#minimal-closed-loop-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">objectives</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">training_size</span><span class="p">):</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">generate_training_data</span><span class="p">(</span>
+        <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+        <span class="n">obj_values</span><span class="o">=</span><span class="n">objectives</span>
+    <span class="p">)</span>
+
+    <span class="n">objectives</span> <span class="o">=</span> <span class="n">objective_function</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+<span class="n">generate_training_data</span><span class="p">(</span>
+    <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+    <span class="n">obj_values</span><span class="o">=</span><span class="n">objectives</span><span class="p">,</span>
+    <span class="n">termination</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="explanation">
+<h3>Explanation<a class="headerlink" href="#explanation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Each iteration retrieves the <strong>next reaction condition</strong></p></li>
+<li><p>The user-defined <code class="docutils literal notranslate"><span class="pre">objective_function</span></code> evaluates the objectives</p></li>
+<li><p>Results are appended to <code class="docutils literal notranslate"><span class="pre">reactions_data.csv</span></code></p></li>
+<li><p>The final call with <code class="docutils literal notranslate"><span class="pre">termination=True</span></code> ensures that all remaining
+reaction conditions are written without requesting further feedback</p></li>
+</ul>
+<p>This workflow enables:</p>
+<ul class="simple">
+<li><p>End-to-end autonomous optimization</p></li>
+<li><p>Synthetic benchmarks (e.g., Branin, analytical test functions)</p></li>
+<li><p>Integration with external automation systems</p></li>
+</ul>
+</section>
+</section>
+<section id="relationship-to-the-amlro-workflow">
+<h2>Relationship to the AMLRO Workflow<a class="headerlink" href="#relationship-to-the-amlro-workflow" title="Link to this heading"></a></h2>
+<p>Training data generation:</p>
+<ul class="simple">
+<li><p>Converts raw experimental results into a structured dataset</p></li>
+<li><p>Maintains full compatibility with manual workflows</p></li>
+<li><p>Acts as the <strong>only required input</strong> for active learning optimization</p></li>
+</ul>
+<p>Once training data is available, users may proceed to:</p>
+<ul class="simple">
+<li><p>Batch selection and model training</p></li>
+<li><p>Prediction of optimal reaction conditions</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reaction_space.html" class="btn btn-neutral float-left" title="Reaction Space Generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="active_learning.html" class="btn btn-neutral float-right" title="Active Learning Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

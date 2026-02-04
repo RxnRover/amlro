@@ -1,0 +1,1005 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>amlro package &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02573738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="amlro" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Module Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">amlro package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.const">amlro.const module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.generate_reaction_conditions">amlro.generate_reaction_conditions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_reaction_conditions.generate_reaction_grid"><code class="docutils literal notranslate"><span class="pre">generate_reaction_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_reaction_conditions.get_reaction_scope"><code class="docutils literal notranslate"><span class="pre">get_reaction_scope()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_reaction_conditions.write_reaction_scope"><code class="docutils literal notranslate"><span class="pre">write_reaction_scope()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.generate_training_data">amlro.generate_training_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.generate_training_data"><code class="docutils literal notranslate"><span class="pre">generate_training_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.get_next_training_conditions"><code class="docutils literal notranslate"><span class="pre">get_next_training_conditions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.load_training_conditions"><code class="docutils literal notranslate"><span class="pre">load_training_conditions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.write_data_to_training_files"><code class="docutils literal notranslate"><span class="pre">write_data_to_training_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.write_line_to_a_file"><code class="docutils literal notranslate"><span class="pre">write_line_to_a_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.generate_training_data.write_training_data"><code class="docutils literal notranslate"><span class="pre">write_training_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.ml_models">amlro.ml_models module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.adaboost_regressor"><code class="docutils literal notranslate"><span class="pre">adaboost_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.bayesian_ridge_regressor"><code class="docutils literal notranslate"><span class="pre">bayesian_ridge_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.decision_tree_regressor"><code class="docutils literal notranslate"><span class="pre">decision_tree_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.elastic_net_regressor"><code class="docutils literal notranslate"><span class="pre">elastic_net_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.get_regressor_model"><code class="docutils literal notranslate"><span class="pre">get_regressor_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.gradient_boost_regressor"><code class="docutils literal notranslate"><span class="pre">gradient_boost_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.knn_regressor"><code class="docutils literal notranslate"><span class="pre">knn_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.random_forest_regressor"><code class="docutils literal notranslate"><span class="pre">random_forest_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.support_vector_regressor"><code class="docutils literal notranslate"><span class="pre">support_vector_regressor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.ml_models.xgboost_regressor"><code class="docutils literal notranslate"><span class="pre">xgboost_regressor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.optimizer">amlro.optimizer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.categorical_feature_decoding"><code class="docutils literal notranslate"><span class="pre">categorical_feature_decoding()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.categorical_feature_encoding"><code class="docutils literal notranslate"><span class="pre">categorical_feature_encoding()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.get_optimized_parameters"><code class="docutils literal notranslate"><span class="pre">get_optimized_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.mo_model_training"><code class="docutils literal notranslate"><span class="pre">mo_model_training()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.model_training"><code class="docutils literal notranslate"><span class="pre">model_training()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.predict_next_parameters"><code class="docutils literal notranslate"><span class="pre">predict_next_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.stringify_parameters_objectives"><code class="docutils literal notranslate"><span class="pre">stringify_parameters_objectives()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.optimizer.write_data_to_training"><code class="docutils literal notranslate"><span class="pre">write_data_to_training()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.pareto">amlro.pareto module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.pareto.identify_pareto_front"><code class="docutils literal notranslate"><span class="pre">identify_pareto_front()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.pareto.is_pareto_dominant"><code class="docutils literal notranslate"><span class="pre">is_pareto_dominant()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.sampling_methods">amlro.sampling_methods module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.sampling_methods.feature_scaling"><code class="docutils literal notranslate"><span class="pre">feature_scaling()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.sampling_methods.latin_hypercube_sampling"><code class="docutils literal notranslate"><span class="pre">latin_hypercube_sampling()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.sampling_methods.random_sampling"><code class="docutils literal notranslate"><span class="pre">random_sampling()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.sampling_methods.sobol_sequnce_sampling"><code class="docutils literal notranslate"><span class="pre">sobol_sequnce_sampling()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro.validations">amlro.validations module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.validations.validate_optimizer_config"><code class="docutils literal notranslate"><span class="pre">validate_optimizer_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amlro.validations.validate_reaction_scope_config"><code class="docutils literal notranslate"><span class="pre">validate_reaction_scope_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-amlro">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">amlro</a></li>
+      <li class="breadcrumb-item active">amlro package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/amlro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="amlro-package">
+<h1>amlro package<a class="headerlink" href="#amlro-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-amlro.const">
+<span id="amlro-const-module"></span><h2>amlro.const module<a class="headerlink" href="#module-amlro.const" title="Link to this heading"></a></h2>
+</section>
+<section id="module-amlro.generate_reaction_conditions">
+<span id="amlro-generate-reaction-conditions-module"></span><h2>amlro.generate_reaction_conditions module<a class="headerlink" href="#module-amlro.generate_reaction_conditions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_reaction_conditions.generate_reaction_grid">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_reaction_conditions.</span></span><span class="sig-name descname"><span class="pre">generate_reaction_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/generate_reaction_conditions.html#generate_reaction_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_reaction_conditions.generate_reaction_grid" title="Link to this definition"></a></dt>
+<dd><p>Generates all reaction conditions in the requested reaction space.</p>
+<p>Given all continuous and categorical input parameters defining a reaction
+space, every reaction parameter combination is generated, forming a
+uniform grid of points over the reaction space. From the config dictionary,
+the <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;feature_names&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;]</span>
+<span class="pre">[&quot;feature_bounds&quot;]</span></code>, and <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;resolutions&quot;]</span></code> are used to
+define the reaction space. If there are categorical parameters, then
+<code class="docutils literal notranslate"><span class="pre">config[&quot;categorical&quot;][&quot;feature_names&quot;]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">config[&quot;categorical&quot;][&quot;values&quot;]</span></code> are also required. It is allowed for there to
+be only continuous, only categorical, or a mixture of both types of
+parameters to be present.</p>
+<p>An encoded variant is also returned with categorical parameter values
+represented as numbers for ease-of-use by other algorithms and optimizers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters, their bounds and resolution.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>reaction space and encoded reaction space.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_reaction_conditions.get_reaction_scope">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_reaction_conditions.</span></span><span class="sig-name descname"><span class="pre">get_reaction_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/generate_reaction_conditions.html#get_reaction_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_reaction_conditions.get_reaction_scope" title="Link to this definition"></a></dt>
+<dd><p>Generate the full reaction space and training reaction conditions.</p>
+<p>If required  write function can be enabled to generate full combo file and
+traning combo files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters, their bounds and resolution.</p></li>
+<li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Sampling methods for generating traning reaction conditions,
+defaults to ‘random’</p></li>
+<li><p><strong>training_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Training set size required for initial experiments,
+defaults to 20</p></li>
+<li><p><strong>write_files</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Option to enable writing files,
+defaults to False</p></li>
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – experimental directory for saving data files,
+defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returning two dataframes with full reaction space
+and training conditions</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – incorrect sampling method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_reaction_conditions.write_reaction_scope">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_reaction_conditions.</span></span><span class="sig-name descname"><span class="pre">write_reaction_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_combo_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_combo_encoded_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_combo_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/amlro/generate_reaction_conditions.html#write_reaction_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_reaction_conditions.write_reaction_scope" title="Link to this definition"></a></dt>
+<dd><p>write reaction scopes into files</p>
+<p>This code will generate following two files, full combo file (full reaction space)
+and training combo file (sub sample of reaction conditions
+to generate training  data file) in given experimental directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>full_combo_df</strong> (<em>pd.DataFrame</em>) – full reaction space dataframe</p></li>
+<li><p><strong>full_combo_encoded_df</strong> – full reaction space dataframe that</p></li>
+</ul>
+</dd>
+</dl>
+<p>catogerical varible encoded into numerical
+:type full_combo_encoded_df: pd.DataFrame
+:param training_combo_df: training reaction conditions dataframe
+:type training_combo_df: pd.DataFrame
+:param exp_dir: experimental directory for saving data files,
+:type exp_dir: str</p>
+</dd></dl>
+
+</section>
+<section id="module-amlro.generate_training_data">
+<span id="amlro-generate-training-data-module"></span><h2>amlro.generate_training_data module<a class="headerlink" href="#module-amlro.generate_training_data" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.generate_training_data">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">generate_training_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reactions_data.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#generate_training_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.generate_training_data" title="Link to this definition"></a></dt>
+<dd><p>Generates a training dataset for the ML model.</p>
+<p>This function handles the generation of training data point for the optimization
+process involving experimental reactions. The function is designed to work
+iteratively,where each iteration represents a generate new training reaction.
+Depending on the iteration number (<cite>itr</cite>) and the termination flag,
+it writes the experimental data to files and provides the
+next set of reaction conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – experimental directory for saving data files</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters</p></li>
+<li><p><strong>parameters</strong> (<em>List</em><em>, </em><em>optional</em>) – Previous experiment parameters or initial parameters,
+defaults to [].</p></li>
+<li><p><strong>obj_values</strong> (<em>List</em><em>, </em><em>optional</em>) – experimental yield from previous experiment.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – filename for reaction data file, filename for reaction data file,
+defaults to the value of <cite>amlro.const.REACTION_DATA_FILENAME</cite>.</p></li>
+<li><p><strong>termination</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – termination of the training function after last iteration
+without returning next reaction conditions, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>parameter set for next experiment.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.get_next_training_conditions">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">get_next_training_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reactions_data.csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#get_next_training_conditions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.get_next_training_conditions" title="Link to this definition"></a></dt>
+<dd><p>Returns next reaction conditions from the training reaction space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – experimental directory for saving data files</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – filename for reaction data file, filename for reaction data file,
+defaults to the value of <cite>amlro.const.REACTION_DATA_FILENAME</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>parameter set for next experiment.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.load_training_conditions">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">load_training_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_combo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'training_combo.csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#load_training_conditions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.load_training_conditions" title="Link to this definition"></a></dt>
+<dd><p>Loads the training data.</p>
+<p>Reads the combination file as pandas data frame and return the
+reaction combination data as list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>training_combo</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – training parameter combination file path, defaults
+to the value of <cite>amlro.const.TRAINING_COMBO_FILE</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>training parameter combination list</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.write_data_to_training_files">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">write_data_to_training_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reactions_data.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#write_data_to_training_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.write_data_to_training_files" title="Link to this definition"></a></dt>
+<dd><p>Writes experimental reaction data into the reaction data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – experimental directory for saving data files</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – filename for reaction data file, filename for reaction data file,
+defaults to the value of <cite>amlro.const.REACTION_DATA_FILENAME</cite>.</p></li>
+<li><p><strong>obj_values</strong> (<em>List</em><em>, </em><em>optional</em>) – experimental yield from previous experiment.</p></li>
+<li><p><strong>filename</strong> – filename for reaction data file, defaults to reaction_data.csv.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.write_line_to_a_file">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">write_line_to_a_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reaction_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#write_line_to_a_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.write_line_to_a_file" title="Link to this definition"></a></dt>
+<dd><p>writes a data line to a file</p>
+<p>Writes the prev reaction conditions and experimental objective values
+at the end of the training data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_file</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – traning set file path</p></li>
+<li><p><strong>reaction_results</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – previous reaction conditions and objective values</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.generate_training_data.write_training_data">
+<span class="sig-prename descclassname"><span class="pre">amlro.generate_training_data.</span></span><span class="sig-name descname"><span class="pre">write_training_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reactions_data.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/amlro/generate_training_data.html#write_training_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.generate_training_data.write_training_data" title="Link to this definition"></a></dt>
+<dd><p>writes the experiment data.</p>
+<p>This function can be used if we needs to perform all the training conditions
+together and write the experimental results together. Batch of training
+experiments results/objectives are neded to collected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – experimental directory for saving data files</p></li>
+<li><p><strong>objectives</strong> (<em>List</em><em>[</em><em>List</em><em>]</em>) – objective values for training reaction conditions</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – filename for reaction data file, filename for reaction data file,
+defaults to the value of <cite>amlro.const.REACTION_DATA_FILENAME</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if lengths of training conditions and objectives dont match.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro.ml_models">
+<span id="amlro-ml-models-module"></span><h2>amlro.ml_models module<a class="headerlink" href="#module-amlro.ml_models" title="Link to this heading"></a></h2>
+<p>This module provides a framework for retrieving various regression models
+along with their corresponding hyperparameter grids for hyper parameter tuning.
+Regression Models:
+- ElasticNet
+- Decision Tree
+- Random Forest
+- Gradient Boosting
+- XGBoost
+- AdaBoost
+- Support Vector Regressor
+- K-Nearest Neighbors (KNN)
+- Bayesian Ridge</p>
+<p>Each function returns a regressor model object and a hyperparameter grid for use
+in hyperparameter optimization (e.g., using grid search
+in <cite>optimizer.model_training</cite>).</p>
+<p>The main function <cite>get_regressor_model(model: str)</cite> serves as the entry point
+to select a model based on user input, returning the chosen model and grid
+for training and tuning.</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><p>model, param_grid = get_regressor_model(‘xgb’)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.adaboost_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">adaboost_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostRegressor.html#sklearn.ensemble.AdaBoostRegressor" title="(in scikit-learn v1.8)"><span class="pre">AdaBoostRegressor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#adaboost_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.adaboost_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates an AdaBoost regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The AdaBoostRegressor model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[AdaBoostRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.bayesian_ridge_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">bayesian_ridge_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.BayesianRidge.html#sklearn.linear_model.BayesianRidge" title="(in scikit-learn v1.8)"><span class="pre">BayesianRidge</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#bayesian_ridge_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.bayesian_ridge_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a BayesianRidge regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The BayesianRidge model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[BayesianRidge, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.decision_tree_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">decision_tree_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor" title="(in scikit-learn v1.8)"><span class="pre">DecisionTreeRegressor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#decision_tree_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.decision_tree_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a DecisionTree regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The DecisionTreeRegressor model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[DecisionTreeRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.elastic_net_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">elastic_net_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="(in scikit-learn v1.8)"><span class="pre">ElasticNet</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#elastic_net_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.elastic_net_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates an ElasticNet regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ElasticNet model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[ElasticNet,Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.get_regressor_model">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">get_regressor_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><span class="pre">object</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#get_regressor_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.get_regressor_model" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the specified regressor model and its hyperparameter grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The name of the model to retrieve. Supported values are:
+‘ela_net’, ‘dtree’, ‘rf’, ‘gb’, ‘xgb’, ‘aboost’, ‘svr’, ‘knn’,
+‘bayesian_ridge’.</p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>defaults to None</em>) – Random seed for define random state of the ML model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The selected model and its hyperparameter grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[model object, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.gradient_boost_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">gradient_boost_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor" title="(in scikit-learn v1.8)"><span class="pre">GradientBoostingRegressor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#gradient_boost_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.gradient_boost_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a GradientBoosting regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The GradientBoostingRegressor model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[GradientBoostingRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.knn_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">knn_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html#sklearn.neighbors.KNeighborsRegressor" title="(in scikit-learn v1.8)"><span class="pre">KNeighborsRegressor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#knn_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.knn_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a K-Nearest Neighbors (KNN) regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The KNeighborsRegressor model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[KNeighborsRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.random_forest_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">random_forest_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="(in scikit-learn v1.8)"><span class="pre">RandomForestRegressor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#random_forest_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.random_forest_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a RandomForest regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The RandomForestRegressor model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[RandomForestRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.support_vector_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">support_vector_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html#sklearn.svm.SVR" title="(in scikit-learn v1.8)"><span class="pre">SVR</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#support_vector_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.support_vector_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates a Support Vector Regressor (SVR) with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The SVR model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[SVR, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.ml_models.xgboost_regressor">
+<span class="sig-prename descclassname"><span class="pre">amlro.ml_models.</span></span><span class="sig-name descname"><span class="pre">xgboost_regressor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">XGBRegressor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/ml_models.html#xgboost_regressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.ml_models.xgboost_regressor" title="Link to this definition"></a></dt>
+<dd><p>Creates an XGBoost regressor with a grid of hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The XGBoost model and hyperparameter grid.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[xgboost.XGBRegressor, Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro.optimizer">
+<span id="amlro-optimizer-module"></span><h2>amlro.optimizer module<a class="headerlink" href="#module-amlro.optimizer" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.categorical_feature_decoding">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">categorical_feature_decoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_combo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#categorical_feature_decoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.categorical_feature_decoding" title="Link to this definition"></a></dt>
+<dd><p>This method converts encoded parameter list into decoded list.
+Convert categorical feature values back into its names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Dict</em>) – Initial reaction feature configurations</p></li>
+<li><p><strong>best_combo</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – parameter list required for decoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded parameter list</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.categorical_feature_encoding">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">categorical_feature_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#categorical_feature_encoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.categorical_feature_encoding" title="Link to this definition"></a></dt>
+<dd><p>This method converts decoded parameter list into encoded list.
+Convert categorical feature values into its numerical values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Dict</em>) – Initial reaction feature configurations</p></li>
+<li><p><strong>prev_parameters</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – parameter list required for encoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>encoded parameter list</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.get_optimized_parameters">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">get_optimized_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[[]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectives_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[[]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reactions_data.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#get_optimized_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.get_optimized_parameters" title="Link to this definition"></a></dt>
+<dd><p>Trains a machine learning model using the provided training data and
+configuration, then predicts and retrieves the next best reaction
+parameters based on the optimization objectives.
+Then, writes the training data and predictions to files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_dir</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – experimental directory for saving data files</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Configuration dictionary specifying features, objectives,
+directions, and other settings for optimizer.</p></li>
+<li><p><strong>parameters_list</strong> (<em>List</em><em>[</em><em>List</em><em>]</em><em>, </em><em>optional</em>) – List of reaction conditions for training,
+defaults to [[]].</p></li>
+<li><p><strong>objectives_list</strong> (<em>List</em><em>[</em><em>List</em><em>]</em><em>, </em><em>optional</em>) – List of objective values corresponding to the reaction
+conditions, defaults to [[]].</p></li>
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The machine learning model type to use, e.g., ‘gb’ for Gradient
+Boosting, defaults to ‘gb’.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the file where reaction data is stored,
+defaults to REACTION_DATA_FILENAME.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The number of best reaction conditions to return,
+defaults to 1.</p></li>
+<li><p><strong>termination</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, the function will terminate early after saving
+data, defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of lists containing the next predicted reaction conditions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.load_data">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reactions_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">combination_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.load_data" title="Link to this definition"></a></dt>
+<dd><p>Loading dataset files</p>
+<p>Reads the training set file and all combination file as pandas data
+frames and split into x train , y train and test datasets. When loading
+the combination file, data rows will be deleted if they are included
+in training file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_file</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to the training set file.</p></li>
+<li><p><strong>combination_file</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to the combination file.</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of optimizer parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>x and y training datasets and test dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.mo_model_training">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">mo_model_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><span class="pre">object</span></a></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#mo_model_training"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.mo_model_training" title="Link to this definition"></a></dt>
+<dd><p>Train the multi output regressor model and return the best model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_train</strong> (<em>pd.Dataframe</em>) – training dataset that contains feature values.</p></li>
+<li><p><strong>y_train</strong> (<em>pd.Dataframe</em>) – target dataframe that contains objective values.</p></li>
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Regressor model name.
+Valid options: ‘ela_net’, ‘dtree’, ‘rf’, ‘gb’, ‘xgb’, ‘aboost’, ‘svr’, ‘knn’,
+‘bayesian_ridge’. Default is ‘gb’ (Gradient Boosting).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>trained regressor model</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>model object with a <cite>predict</cite> method (e.g., sklearn regressor)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.model_training">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">model_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gb'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><span class="pre">object</span></a></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#model_training"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.model_training" title="Link to this definition"></a></dt>
+<dd><p>Train the regressor model and return the best model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_train</strong> (<em>pd.Dataframe</em>) – training dataset that contains feature values.</p></li>
+<li><p><strong>y_train</strong> (<em>pd.Dataframe</em>) – target dataframe that contains objective values.</p></li>
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Regressor model name.
+Valid options: ‘ela_net’, ‘dtree’, ‘rf’, ‘gb’, ‘xgb’, ‘aboost’, ‘svr’, ‘knn’,
+‘bayesian_ridge’. Default is ‘gb’ (Gradient Boosting).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>trained regressor model</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>model object with a <cite>predict</cite> method (e.g., sklearn regressor)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.predict_next_parameters">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">predict_next_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#predict_next_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.predict_next_parameters" title="Link to this definition"></a></dt>
+<dd><p>Predicts the yield from all the combination data using a trained
+regressor model and return the best combinations.</p>
+<p>The function handles both single-objective and multi-objective optimization.
+In the single-objective case, it sorts the predicted results based on the
+specified direction (maximization or minimization).
+In the multi-objective case, it identifies the Pareto front and ranks solutions
+by computing weighted sums of normalized objectives. Weights are defined as
+-1 for min and +1 for max.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regr</strong> (model object with a <cite>predict</cite> method (e.g., sklearn regressor)) – trained regressor model</p></li>
+<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – test dataset that contains full reaction space</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of optimizer parameters</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Number of reactions conditions need as predictions
+defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>batch of best predicted parameter</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.stringify_parameters_objectives">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">stringify_parameters_objectives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectives_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#stringify_parameters_objectives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.stringify_parameters_objectives" title="Link to this definition"></a></dt>
+<dd><p>Combine reaction parameters and respective objectives values
+as a comma sepearated string for writing into reaction data file.</p>
+<p>Convert parameters and their respective objective values into
+comma-separated strings, both encoded and decoded, for writing into a
+reaction data file. The function encodes categorical features based on
+the provided configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters_list</strong> (<em>List</em><em>[</em><em>List</em><em>]</em>) – A list of reaction conditions, where each condition
+is a list of parameter values.</p></li>
+<li><p><strong>objectives_list</strong> (<em>List</em><em>[</em><em>List</em><em>]</em>) – A list of objective values where list of corrosponding
+objective values for each reaction condition.</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of optimizer parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two lists of strings: (1) the parameters with encoded categorical
+features combined with objective values, and (2) the original
+(decoded) parameter values combined with objective values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)">str</a>], List[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.optimizer.write_data_to_training">
+<span class="sig-prename descclassname"><span class="pre">amlro.optimizer.</span></span><span class="sig-name descname"><span class="pre">write_data_to_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/amlro/optimizer.html#write_data_to_training"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.optimizer.write_data_to_training" title="Link to this definition"></a></dt>
+<dd><p>writing the prev best predicted combination and
+experimental yield at the end of the training set file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_file</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – traning set file path</p></li>
+<li><p><strong>prev_parameters</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em>) – previous best combo and yield</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro.pareto">
+<span id="amlro-pareto-module"></span><h2>amlro.pareto module<a class="headerlink" href="#module-amlro.pareto" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.pareto.identify_pareto_front">
+<span class="sig-prename descclassname"><span class="pre">amlro.pareto.</span></span><span class="sig-name descname"><span class="pre">identify_pareto_front</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfeatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="../_modules/amlro/pareto.html#identify_pareto_front"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.pareto.identify_pareto_front" title="Link to this definition"></a></dt>
+<dd><p>Identifies the Pareto front from a list of points in a multi-objective space.</p>
+<p>The Pareto front is a set of non-dominated points in a multi-objective optimization
+problem. A point is considered to be on the Pareto front if no other point in
+the set dominates it. This function examines each point and determines whether it
+should be included in the Pareto front.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prediction_data</strong> (<em>List</em>) – A list  of points/predictions, where each point contains
+both feature values and objective values. The objective values should follow
+the features in each point.</p></li>
+<li><p><strong>directions</strong> (<em>List</em>) – Optimization direction for each objective. Each entry should be
+“min” for minimization or “max” for maximization.</p></li>
+<li><p><strong>nfeatures</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Length of the feature space</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of pareto solutions</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.pareto.is_pareto_dominant">
+<span class="sig-prename descclassname"><span class="pre">amlro.pareto.</span></span><span class="sig-name descname"><span class="pre">is_pareto_dominant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/amlro/pareto.html#is_pareto_dominant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.pareto.is_pareto_dominant" title="Link to this definition"></a></dt>
+<dd><p>Determines whether one point dominates another in a multi-objective space
+according to Pareto dominance.</p>
+<p>Pareto dominance is a concept used in multi-objective optimization to compare
+two points (or solutions) based on multiple objectives. A point <cite>A</cite> is said to
+Pareto-dominate another point <cite>B</cite> if <cite>A</cite> is no worse than <cite>B</cite> in all objectives
+and better than <cite>B</cite> in at least one objective.</p>
+<p>This function checks whether <cite>point1</cite> Pareto-dominates <cite>point2</cite> considering
+the specified optimization directions for each objective.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> (<em>List</em>) – List of objective values for the first point</p></li>
+<li><p><strong>point2</strong> (<em>List</em>) – List of objective values for the second point</p></li>
+<li><p><strong>directions</strong> (<em>List</em>) – Optimization direction for each objective. Each entry should be
+“min” for minimization or “max” for maximization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if <cite>point1</cite> Pareto-dominates <cite>point2</cite>, otherwise False.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro.sampling_methods">
+<span id="amlro-sampling-methods-module"></span><h2>amlro.sampling_methods module<a class="headerlink" href="#module-amlro.sampling_methods" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.sampling_methods.feature_scaling">
+<span class="sig-prename descclassname"><span class="pre">amlro.sampling_methods.</span></span><span class="sig-name descname"><span class="pre">feature_scaling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/sampling_methods.html#feature_scaling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.sampling_methods.feature_scaling" title="Link to this definition"></a></dt>
+<dd><p>This function will scale and map the continous and
+categorical features from latin hypercube and sobol sampling space.
+These methods will generate coordinates
+between [0,1] for each dimention.</p>
+<p>From the config dictionary,
+the <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;feature_names&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;]</span>
+<span class="pre">[&quot;feature_bounds&quot;]</span></code>, and <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;resolutions&quot;]</span></code> are
+used rescale the continous features and <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;bounds&quot;]</span></code>
+and <code class="docutils literal notranslate"><span class="pre">config[&quot;continuous&quot;][&quot;feature_names&quot;]</span></code> are used to
+rescale categorical features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> (<em>List</em><em>[</em><em>List</em><em>]</em>) – sub sample generated from sampling method</p></li>
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters, their bounds and resolution.</p></li>
+<li><p><strong>res_factor</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – resolution factor to define rounding decimal places,
+defaults to 1.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>scaled traning reaction conditions dataframe</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.sampling_methods.latin_hypercube_sampling">
+<span class="sig-prename descclassname"><span class="pre">amlro.sampling_methods.</span></span><span class="sig-name descname"><span class="pre">latin_hypercube_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/sampling_methods.html#latin_hypercube_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.sampling_methods.latin_hypercube_sampling" title="Link to this definition"></a></dt>
+<dd><p>Generate subsample from full reaction space using  latent hypercube sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters, their bounds and resolution.</p></li>
+<li><p><strong>sample_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – sub sample size, defaults to 20</p></li>
+<li><p><strong>res_factor</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – resolution factor to define rounding decimal places,
+defaults to 1.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sub sample of reaction space needed for training set generation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.sampling_methods.random_sampling">
+<span class="sig-prename descclassname"><span class="pre">amlro.sampling_methods.</span></span><span class="sig-name descname"><span class="pre">random_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/sampling_methods.html#random_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.sampling_methods.random_sampling" title="Link to this definition"></a></dt>
+<dd><p>Generate subsample from full reaction space using random sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Dataframe with full reaction space</p></li>
+<li><p><strong>sample_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – sub sample size, defaults to 20</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sub sample of reaction space needed for training set generation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.sampling_methods.sobol_sequnce_sampling">
+<span class="sig-prename descclassname"><span class="pre">amlro.sampling_methods.</span></span><span class="sig-name descname"><span class="pre">sobol_sequnce_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/amlro/sampling_methods.html#sobol_sequnce_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.sampling_methods.sobol_sequnce_sampling" title="Link to this definition"></a></dt>
+<dd><p>Generate subsample from full reaction space using Sobol sequnce sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Dict</em>) – Dictionary of parameters, their bounds and resolution.</p></li>
+<li><p><strong>sample_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – sub sample size, defaults to 20</p></li>
+<li><p><strong>res_factor</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – resolution factor to define rounding decimal places,
+defaults to 1.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sub sample of reaction space needed for training set generation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro.validations">
+<span id="amlro-validations-module"></span><h2>amlro.validations module<a class="headerlink" href="#module-amlro.validations" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.validations.validate_optimizer_config">
+<span class="sig-prename descclassname"><span class="pre">amlro.validations.</span></span><span class="sig-name descname"><span class="pre">validate_optimizer_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/amlro/validations.html#validate_optimizer_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.validations.validate_optimizer_config" title="Link to this definition"></a></dt>
+<dd><p>Validates the config dict for the optimizer and generate training set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>Dict</em>) – Configuration to be checked</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If lengths of directions and objectives do not match.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If any direction is not ‘min’ or ‘max’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="amlro.validations.validate_reaction_scope_config">
+<span class="sig-prename descclassname"><span class="pre">amlro.validations.</span></span><span class="sig-name descname"><span class="pre">validate_reaction_scope_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/amlro/validations.html#validate_reaction_scope_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#amlro.validations.validate_reaction_scope_config" title="Link to this definition"></a></dt>
+<dd><p>Validates the part of the configuration dictionary for generating grids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>Dict</em>) – Configuration to be checked</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – At least one given bound is invalid.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – At least one given resolution is invalid.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-amlro">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-amlro" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="amlro" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>amlro.sampling_methods &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=02573738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">amlro.sampling_methods</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for amlro.sampling_methods</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyDOE3</span><span class="w"> </span><span class="kn">import</span> <span class="n">lhs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats.qmc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sobol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resample</span>
+
+<span class="n">SEED</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span>
+
+
+<div class="viewcode-block" id="random_sampling">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.sampling_methods.random_sampling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">random_sampling</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate subsample from full reaction space using random sampling.</span>
+
+<span class="sd">    :param df: Dataframe with full reaction space</span>
+<span class="sd">    :type df: pd.DataFrame</span>
+<span class="sd">    :param sample_size: sub sample size, defaults to 20</span>
+<span class="sd">    :type sample_size: int, optional</span>
+<span class="sd">    :return: sub sample of reaction space needed for training set generation</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sample_df</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sample_df</span></div>
+
+
+
+<div class="viewcode-block" id="latin_hypercube_sampling">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.sampling_methods.latin_hypercube_sampling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">latin_hypercube_sampling</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate subsample from full reaction space using  latent hypercube sampling.</span>
+
+<span class="sd">    :param config: Dictionary of parameters, their bounds and resolution.</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param sample_size: sub sample size, defaults to 20</span>
+<span class="sd">    :type sample_size: int, optional</span>
+<span class="sd">    :param res_factor: resolution factor to define rounding decimal places,</span>
+<span class="sd">        defaults to 1.0</span>
+<span class="sd">    :type res_factor: float, optional</span>
+<span class="sd">    :return: sub sample of reaction space needed for training set generation</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+
+    <span class="c1"># Generate LHS samples</span>
+    <span class="c1"># lhs_samples = lhs(n_features,criterion=&#39;center&#39;, samples=sample_size)</span>
+    <span class="n">lhs_samples</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">(</span>
+        <span class="n">n</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+        <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;maximin&quot;</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">samples</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">training_df</span> <span class="o">=</span> <span class="n">feature_scaling</span><span class="p">(</span><span class="n">lhs_samples</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">)</span>
+
+    <span class="c1"># res_factor is added, when feature scaling we are rounding feature values to</span>
+    <span class="c1"># fit into the grid resoultions. if we get duplicates when we doing this we make</span>
+    <span class="c1"># extra 0.1 factor finer of the resoulution.</span>
+
+    <span class="k">if</span> <span class="n">training_df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">res_factor</span> <span class="o">=</span> <span class="n">res_factor</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="k">return</span> <span class="n">latin_hypercube_sampling</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">training_df</span></div>
+
+
+
+<div class="viewcode-block" id="sobol_sequnce_sampling">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.sampling_methods.sobol_sequnce_sampling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sobol_sequnce_sampling</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate subsample from full reaction space using Sobol sequnce sampling.</span>
+
+<span class="sd">    :param config: Dictionary of parameters, their bounds and resolution.</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param sample_size: sub sample size, defaults to 20</span>
+<span class="sd">    :type sample_size: int, optional</span>
+<span class="sd">    :param res_factor: resolution factor to define rounding decimal places,</span>
+<span class="sd">        defaults to 1.0</span>
+<span class="sd">    :type res_factor: float, optional</span>
+<span class="sd">    :return: sub sample of reaction space needed for training set generation</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+
+    <span class="c1"># Generate Sobol samples</span>
+    <span class="n">sobol_engine</span> <span class="o">=</span> <span class="n">Sobol</span><span class="p">(</span>
+        <span class="n">d</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">scramble</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>  <span class="c1"># make scramble True to make randomized</span>
+    <span class="n">sobol_samples</span> <span class="o">=</span> <span class="n">sobol_engine</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">sample_size</span><span class="p">)</span>
+
+    <span class="n">training_df</span> <span class="o">=</span> <span class="n">feature_scaling</span><span class="p">(</span><span class="n">sobol_samples</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">training_df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">res_factor</span> <span class="o">=</span> <span class="n">res_factor</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="k">return</span> <span class="n">sobol_sequnce_sampling</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">training_df</span></div>
+
+
+
+<div class="viewcode-block" id="feature_scaling">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.sampling_methods.feature_scaling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">feature_scaling</span><span class="p">(</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">res_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function will scale and map the continous and</span>
+<span class="sd">    categorical features from latin hypercube and sobol sampling space.</span>
+<span class="sd">    These methods will generate coordinates</span>
+<span class="sd">    between [0,1] for each dimention.</span>
+
+<span class="sd">    From the config dictionary,</span>
+<span class="sd">    the ``config[&quot;continuous&quot;][&quot;feature_names&quot;]``, ``config[&quot;continuous&quot;]</span>
+<span class="sd">    [&quot;feature_bounds&quot;]``, and ``config[&quot;continuous&quot;][&quot;resolutions&quot;]`` are</span>
+<span class="sd">    used rescale the continous features and ``config[&quot;continuous&quot;][&quot;bounds&quot;]``</span>
+<span class="sd">    and ``config[&quot;continuous&quot;][&quot;feature_names&quot;]`` are used to</span>
+<span class="sd">    rescale categorical features.</span>
+
+<span class="sd">    :param samples: sub sample generated from sampling method</span>
+<span class="sd">    :type samples: List[List]</span>
+<span class="sd">    :param config: Dictionary of parameters, their bounds and resolution.</span>
+<span class="sd">    :type config: Dict</span>
+<span class="sd">    :param res_factor: resolution factor to define rounding decimal places,</span>
+<span class="sd">        defaults to 1.0</span>
+<span class="sd">    :type res_factor: float, optional</span>
+<span class="sd">    :return: scaled traning reaction conditions dataframe</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">n_continuous</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">])</span>
+
+    <span class="n">scaled_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">feature_names</span><span class="p">)</span>
+
+    <span class="c1"># Scaling continuous features</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">],</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="p">):</span>
+
+        <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">=</span> <span class="n">bounds</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;continuous&quot;</span><span class="p">][</span><span class="s2">&quot;resolutions&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1"># sample_scaled = samples[:, i] * (max_val - min_val) + min_val</span>
+
+        <span class="c1"># scaled_df[feature_name] = (  # sample_scaled</span>
+        <span class="c1">#     np.round(sample_scaled / (resolution * res_factor))</span>
+        <span class="c1">#     * resolution</span>
+        <span class="c1">#     * res_factor</span>
+        <span class="c1"># )</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+
+        <span class="c1"># scale Sobol/LHS sample to continuous space</span>
+        <span class="n">sample_scaled</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">+</span> <span class="n">min_val</span>
+
+        <span class="c1"># snap to nearest grid value</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grid</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_scaled</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">scaled_df</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="c1"># Map and scale categorical features</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">],</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;categorical&quot;</span><span class="p">][</span><span class="s2">&quot;feature_names&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="p">):</span>
+
+        <span class="n">num_categories</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">cat_samples</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="n">n_continuous</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_categories</span>
+        <span class="n">rounded_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">cat_samples</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1"># need to check min between index and categories-1 to handle</span>
+        <span class="c1"># index out of bounds when sample value is equal to 1.0</span>
+        <span class="n">scaled_df</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">values</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">num_categories</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">rounded_samples</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">scaled_df</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

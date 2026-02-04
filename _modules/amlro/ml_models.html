@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>amlro.ml_models &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=02573738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">amlro.ml_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for amlro.ml_models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; This module provides a framework for retrieving various regression models</span>
+<span class="sd">    along with their corresponding hyperparameter grids for hyper parameter tuning.</span>
+<span class="sd">    Regression Models:</span>
+<span class="sd">    - ElasticNet</span>
+<span class="sd">    - Decision Tree</span>
+<span class="sd">    - Random Forest</span>
+<span class="sd">    - Gradient Boosting</span>
+<span class="sd">    - XGBoost</span>
+<span class="sd">    - AdaBoost</span>
+<span class="sd">    - Support Vector Regressor</span>
+<span class="sd">    - K-Nearest Neighbors (KNN)</span>
+<span class="sd">    - Bayesian Ridge</span>
+
+<span class="sd">    Each function returns a regressor model object and a hyperparameter grid for use</span>
+<span class="sd">    in hyperparameter optimization (e.g., using grid search</span>
+<span class="sd">    in `optimizer.model_training`).</span>
+
+<span class="sd">    The main function `get_regressor_model(model: str)` serves as the entry point</span>
+<span class="sd">    to select a model based on user input, returning the chosen model and grid</span>
+<span class="sd">    for training and tuning.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">        model, param_grid = get_regressor_model(&#39;xgb&#39;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">xgboost</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AdaBoostRegressor</span><span class="p">,</span>
+    <span class="n">GradientBoostingRegressor</span><span class="p">,</span>
+    <span class="n">RandomForestRegressor</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">BayesianRidge</span><span class="p">,</span> <span class="n">ElasticNet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsRegressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeRegressor</span>
+
+
+<div class="viewcode-block" id="elastic_net_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.elastic_net_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">elastic_net_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ElasticNet</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an ElasticNet regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The ElasticNet model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[ElasticNet,Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">ElasticNet</span><span class="p">()</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="s2">&quot;l1_ratio&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="decision_tree_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.decision_tree_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">decision_tree_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DecisionTreeRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a DecisionTree regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The DecisionTreeRegressor model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[DecisionTreeRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">()</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;min_samples_split&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+        <span class="s2">&quot;min_samples_leaf&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;max_features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;sqrt&quot;</span><span class="p">,</span> <span class="s2">&quot;log2&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="random_forest_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.random_forest_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">random_forest_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">RandomForestRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a RandomForest regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The RandomForestRegressor model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[RandomForestRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+
+    <span class="n">estimators_int</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="n">estimators_int</span><span class="p">,</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;max_features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;sqrt&quot;</span><span class="p">,</span> <span class="s2">&quot;log2&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="gradient_boost_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.gradient_boost_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gradient_boost_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">GradientBoostingRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a GradientBoosting regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The GradientBoostingRegressor model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[GradientBoostingRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">()</span>
+
+    <span class="n">estimators_int</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="n">estimators_int</span><span class="p">,</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="xgboost_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.xgboost_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">xgboost_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">xgboost</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an XGBoost regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The XGBoost model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[xgboost.XGBRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">xgboost</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">()</span>
+
+    <span class="n">estimators_int</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="n">estimators_int</span><span class="p">,</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="adaboost_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.adaboost_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">adaboost_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">AdaBoostRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an AdaBoost regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The AdaBoostRegressor model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[AdaBoostRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">AdaBoostRegressor</span><span class="p">()</span>
+
+    <span class="n">estimators_int</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="n">estimators_int</span><span class="p">,</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;square&quot;</span><span class="p">,</span> <span class="s2">&quot;exponential&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="support_vector_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.support_vector_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">support_vector_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">SVR</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a Support Vector Regressor (SVR) with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The SVR model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[SVR, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">SVR</span><span class="p">()</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;epsilon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="knn_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.knn_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">knn_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">KNeighborsRegressor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a K-Nearest Neighbors (KNN) regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The KNeighborsRegressor model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[KNeighborsRegressor, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">()</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_neighbors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+        <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="s2">&quot;manhattan&quot;</span><span class="p">,</span> <span class="s2">&quot;minkowski&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="bayesian_ridge_regressor">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.bayesian_ridge_regressor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bayesian_ridge_regressor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BayesianRidge</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a BayesianRidge regressor with a grid of hyperparameters.</span>
+
+<span class="sd">    :return: The BayesianRidge model and hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[BayesianRidge, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">BayesianRidge</span><span class="p">()</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;alpha_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+        <span class="s2">&quot;alpha_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+        <span class="s2">&quot;lambda_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+        <span class="s2">&quot;lambda_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+        <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+
+
+<div class="viewcode-block" id="get_regressor_model">
+<a class="viewcode-back" href="../../api/amlro.html#amlro.ml_models.get_regressor_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_regressor_model</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the specified regressor model and its hyperparameter grid.</span>
+
+<span class="sd">    :param model: The name of the model to retrieve. Supported values are:</span>
+<span class="sd">        &#39;ela_net&#39;, &#39;dtree&#39;, &#39;rf&#39;, &#39;gb&#39;, &#39;xgb&#39;, &#39;aboost&#39;, &#39;svr&#39;, &#39;knn&#39;,</span>
+<span class="sd">        &#39;bayesian_ridge&#39;.</span>
+<span class="sd">    :type model: str</span>
+<span class="sd">    :param seed: Random seed for define random state of the ML model</span>
+<span class="sd">    :type seed: int, defaults to None</span>
+<span class="sd">    :return: The selected model and its hyperparameter grid.</span>
+<span class="sd">    :rtype: Tuple[model object, Dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;ela_net&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">elastic_net_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;dtree&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">decision_tree_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;rf&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">random_forest_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;gb&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">gradient_boost_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;xgb&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">xgboost_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;aboost&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">adaboost_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;svr&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">support_vector_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">knn_regressor</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;bayesian_ridge&quot;</span><span class="p">:</span>
+        <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">bayesian_ridge_regressor</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid regressor name given: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">model</span> <span class="o">!=</span> <span class="s2">&quot;svr&quot;</span> <span class="ow">and</span> <span class="n">model</span> <span class="o">!=</span> <span class="s2">&quot;knn&quot;</span> <span class="ow">and</span> <span class="n">model</span> <span class="o">!=</span> <span class="s2">&quot;bayesian_ridge&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting random state &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; for ML model&quot;</span><span class="p">)</span>
+        <span class="n">regr</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">regr</span><span class="p">,</span> <span class="n">param_grid</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

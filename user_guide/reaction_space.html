@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reaction Space Generation &mdash; amlro 0.0.post1.dev1+gca4c9f064 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02573738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Training Data Generation" href="training_data.html" />
+    <link rel="prev" title="Configuration" href="configurations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            amlro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configurations.html">Configurations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Reaction Space Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#function-arguments">Function Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-dictionary">Configuration Dictionary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sampling-strategy">Sampling Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#training-size">Training Size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#experiment-directory">Experiment Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#file-generation">File Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inspecting-the-reaction-space">Inspecting the Reaction Space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relationship-to-the-amlro-workflow">Relationship to the AMLRO Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training_data.html">Generate Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning Prediction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">AMLRO Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amlro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Reaction Space Generation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/reaction_space.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="reaction-space-generation">
+<span id="reaction-space"></span><h1>Reaction Space Generation<a class="headerlink" href="#reaction-space-generation" title="Link to this heading"></a></h1>
+<p>This section describes how AMLRO constructs the <strong>reaction search space</strong> and
+selects the <strong>initial training conditions</strong> using the <code class="docutils literal notranslate"><span class="pre">get_reaction_scope</span></code>
+entry-point function.</p>
+<p>This is the <strong>first step</strong> in any AMLRO workflow.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Reaction space generation serves two purposes:</p>
+<ol class="arabic simple">
+<li><p>Construct the <strong>full combinatorial reaction space</strong> based on user-defined
+continuous and categorical parameters.</p></li>
+<li><p>Select an <strong>initial subset of reactions</strong> for training using a chosen
+sampling strategy.</p></li>
+</ol>
+<p>The reaction scope is generated using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">get_reaction_scope</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">sampling</span><span class="o">=</span><span class="s2">&quot;sobol&quot;</span><span class="p">,</span>
+    <span class="n">training_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">write_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">exp_dir</span><span class="o">=</span><span class="n">exp_dir</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This function generates all reaction combinations and writes them to
+<code class="docutils literal notranslate"><span class="pre">full_combo.csv</span></code> for use as reaction grid for active learning optimization.</p>
+</section>
+<section id="function-arguments">
+<h2>Function Arguments<a class="headerlink" href="#function-arguments" title="Link to this heading"></a></h2>
+<section id="configuration-dictionary">
+<h3>Configuration Dictionary<a class="headerlink" href="#configuration-dictionary" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">config</span></code> defines the <strong>reaction parameters and objectives</strong> and is described
+in detail in <span class="xref std std-doc">configuration</span>.</p>
+<p>Only reaction variables and vales are read from <code class="docutils literal notranslate"><span class="pre">config</span></code> at this stage.</p>
+</section>
+<section id="sampling-strategy">
+<h3>Sampling Strategy<a class="headerlink" href="#sampling-strategy" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">sampling</span></code> argument controls how the <strong>initial training reactions</strong> are
+selected from the full reaction space.</p>
+<p>Supported options include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;lhs&quot;</span></code> – Latin Hypercube Sampling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;sobol&quot;</span></code> – Sobol low-discrepancy sequence</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code> – Random sampling</p></li>
+</ul>
+<p>The sampling method affects <strong>only the initial training set</strong> and does not alter
+the full reaction space.</p>
+<p>Implementation details:</p>
+<ul class="simple">
+<li><p>Latin Hypercube Sampling (LHS) is implemented using <strong>PyDOE2</strong> with a min–max
+criterion, 1000 iterations, and a fixed random seed for reproducibility.</p></li>
+<li><p>Sobol sampling is implemented using <code class="docutils literal notranslate"><span class="pre">scipy.qmc</span></code>.</p></li>
+<li><p>Random sampling uses uniform random selection.</p></li>
+</ul>
+</section>
+<section id="training-size">
+<h3>Training Size<a class="headerlink" href="#training-size" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">training_size</span></code> specifies the number of reaction conditions selected for the
+<strong>initial training set</strong>.</p>
+<p>This value should reflect experimental or computational budget constraints.
+Typical values range from 5 to 50 reactions, depending on problem complexity.
+Donot go lesser than 5.</p>
+</section>
+<section id="experiment-directory">
+<h3>Experiment Directory<a class="headerlink" href="#experiment-directory" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">exp_dir</span></code> defines the directory where all generated reaction space and
+training files are written.</p>
+<p>If the directory does not exist, it will be created automatically. This
+directory should use with full optimization cycle. Specially if you manually
+adding <code class="docutils literal notranslate"><span class="pre">reaction_data.csv</span></code> includes here.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">exp_dir</span> <span class="o">=</span> <span class="s2">&quot;exp_data&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="file-generation">
+<h2>File Generation<a class="headerlink" href="#file-generation" title="Link to this heading"></a></h2>
+<p>When <code class="docutils literal notranslate"><span class="pre">write_files=True</span></code>, the reaction space generation step produces the
+following files inside <code class="docutils literal notranslate"><span class="pre">exp_dir</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">full_combo.csv</span></code> Encoded representation of the complete reaction space.
+Categorical variables are stored as integer indices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_combo_decoded.csv</span></code> Human-readable version of the full reaction space
+with original categorical values restored. (This file is generated if only
+reaction space &lt;= 20000)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">training_combo.csv</span></code> Initial subset of reaction conditions selected using
+the specified sampling strategy. These reactions are intended to be performed
+experimentally or evaluated via simulation.</p></li>
+</ul>
+<p>These files allow users to <strong>inspect, visualize, or modify</strong> reaction conditions
+prior to experimentation.</p>
+</section>
+<section id="inspecting-the-reaction-space">
+<h2>Inspecting the Reaction Space<a class="headerlink" href="#inspecting-the-reaction-space" title="Link to this heading"></a></h2>
+<p>Users may inspect the generated reaction combinations using standard data
+analysis tools.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;exp_data/training_combo.csv&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>This is particularly useful for verifying parameter ranges, sampling behavior,
+and categorical encoding.</p>
+</section>
+<section id="relationship-to-the-amlro-workflow">
+<h2>Relationship to the AMLRO Workflow<a class="headerlink" href="#relationship-to-the-amlro-workflow" title="Link to this heading"></a></h2>
+<p>Reaction space generation is a <strong>one-time initialization step</strong>. Once completed,
+users proceed to:</p>
+<ol class="arabic simple">
+<li><p>Perform experiments or simulations for conditions listed in
+<code class="docutils literal notranslate"><span class="pre">training_combo.csv</span></code></p></li>
+<li><p>Invoke active learning to propose new reaction conditions</p></li>
+</ol>
+<p>For details on how experimental feedback is incorporated, see
+<span class="xref std std-doc">training_data.rst</span>.</p>
+<p>For details on batch selection and optimization, see <span class="xref std std-doc">active_learning.rst</span>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configurations.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="training_data.html" class="btn btn-neutral float-right" title="Training Data Generation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, dulithaprasanna.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
