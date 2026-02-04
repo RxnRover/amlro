@@ -1,0 +1,11 @@
+name: GitHub Pages Documentation Generation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: # Run in every PR
+
+jobs:
+  gh_pages_generation:
+    uses: RxnRover/.github/.github/workflows/gh_pages_sphinx_main.yml@main
