@@ -33,8 +33,6 @@
 AMLRO
 =====
 
-This is the documentation of **amlro**.
-
 Active Machine Learning Reaction Optimizer (AMLRO) for data-efficient reaction
 process condition discovery and optimization.
 
