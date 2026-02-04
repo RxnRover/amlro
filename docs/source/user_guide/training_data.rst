@@ -1,7 +1,7 @@
 .. _training_data:
 
 Training Data Generation
-=======================
+========================
 
 This section describes how AMLRO incorporates **experimental or computational
 feedback** to build the training dataset used for active learning.

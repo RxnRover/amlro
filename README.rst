@@ -30,12 +30,36 @@
 
 |
 
-amlro
+AMLRO
 =====
 
-    Active Machine Learning Reaction Optimizer (AMLRO)
+This is the documentation of **amlro**.
 
-A longer description of your project goes here...
+Active Machine Learning Reaction Optimizer (AMLRO) for data-efficient reaction
+process condition discovery and optimization.
+
+AMLRO is an open-source framework designed to accelerate chemical reaction
+optimization using active learning with classical machine learning regression
+models. AMLRO integrates space-filling sampling strategies (e.g., Sobol and
+Latin Hypercube sampling) with iterative model training, prediction, and
+experiment selection to efficiently navigate complex reaction spaces. The
+platform supports multiple regression models, flexible multi-objective
+definitions, and user-defined parameter bounds, enabling data-efficient
+optimization from small initial datasets. AMLRO is designed for ease of use by
+experimentalists and can operate as a standalone decision-support tool or be
+integrated into closed-loop automated experimentation workflows.
+
+AMLRO follows a three-step workflow:
+
+1. Reaction space generation
+2. Training set generation with experimental feedback
+3. Active learning-loop -> prediction of optimal reaction conditions.
+
+.. image:: doc/_static/AMLRO.jpg
+    :width: 80%
+    :align: center
+    :alt: AMLRO workflow overview
+
 
 .. _pyscaffold-notes:
 
