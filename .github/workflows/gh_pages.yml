@@ -4,8 +4,37 @@ on:
   push:
     branches:
       - main
-  pull_request: # Run in every PR
+  pull_request:
 
 jobs:
   gh_pages_generation:
-    uses: RxnRover/.github/.github/workflows/gh_pages_sphinx_main.yml@main
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.13"]  # use 3.11 to match amlro python_requires
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install tox
+
+      - name: Build documentation
+        run: tox -e docs
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
+          publish_branch: gh-pages
+          # optional: keep history
+          keep_files: true
