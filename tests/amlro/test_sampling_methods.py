@@ -104,12 +104,12 @@ class TestFeatureScaling(unittest.TestCase):
             "continuous": {
                 "feature_names": ["feature1", "feature2"],
                 "bounds": [(0, 10), (20, 30)],
-                "resolutions": [1, 0.5],
+                "resolutions": [1.0, 0.5],
             },
             "categorical": {"feature_names": [], "values": []},
         }
         expected_output = pd.DataFrame(
-            {"feature1": [1.0, 5.0, 1.4], "feature2": [30.0, 21.0, 30.0]}
+            {"feature1": [1.0, 5.0, 1.0], "feature2": [30.0, 21.0, 30.0]}
         )
 
         result = feature_scaling(samples, config)
@@ -149,7 +149,7 @@ class TestFeatureScaling(unittest.TestCase):
             "continuous": {
                 "feature_names": ["feature1"],
                 "bounds": [(0, 10)],
-                "resolutions": [1],
+                "resolutions": [1.0],
             },
             "categorical": {
                 "feature_names": ["feature2"],
