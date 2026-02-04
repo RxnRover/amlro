@@ -38,6 +38,11 @@ This is the documentation of **amlro**.
 Active Machine Learning Reaction Optimizer (AMLRO) for data-efficient reaction
 process condition discovery and optimization.
 
+.. image:: doc/source/_static/AMLRO.jpg
+    :width: 80%
+    :align: center
+    :alt: AMLRO overview
+
 AMLRO is an open-source framework designed to accelerate chemical reaction
 optimization using active learning with classical machine learning regression
 models. AMLRO integrates space-filling sampling strategies (e.g., Sobol and
@@ -55,11 +60,11 @@ AMLRO follows a three-step workflow:
 2. Training set generation with experimental feedback
 3. Active learning-loop -> prediction of optimal reaction conditions.
 
-.. image:: doc/_static/AMLRO.jpg
-    :width: 80%
-    :align: center
-    :alt: AMLRO workflow overview
+Click the badge below to open AMLRO Interactive notebook in **Google Colab**:
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+    :alt: open in colab
+    :target: https://colab.research.google.com/github/RxnRover/amlro/blob/main/notebooks/AMLRO_interactive_colab.ipynb
 
 .. _pyscaffold-notes:
 
