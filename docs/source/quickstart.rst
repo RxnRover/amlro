@@ -16,7 +16,7 @@ AMLRO is designed for *iterative* optimization workflows. Between optimization
 steps, experimental or computational feedback must be provided by the user.
 
 Step 0: Import Packages
-----------------------
+-----------------------
 
 .. code-block:: python
 

@@ -9,8 +9,8 @@ from the source code.
 Requirements
 ------------
 
-* Python >= 3.8
-* scikit-learn pandas numpy matplotlib seaborn flask xgboost Joblib pyDOE2
+* Python >= 3.9
+* scikit-learn pandas numpy matplotlib seaborn flask xgboost Joblib pyDOE3
 
 Optional dependencies may be required for specific workflows (e.g.
 RDKit for cheminformatics or PyTorch for neural network models).
@@ -31,7 +31,7 @@ Example using ``venv``:
 
 
 Install from source (recommended)
---------------------------------
+---------------------------------
 
 AMLRO is currently under active development and is not yet available on PyPI.
 To install AMLRO, clone the repository and install it locally.
