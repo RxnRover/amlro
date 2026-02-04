@@ -74,7 +74,16 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "myst_nb",
 ]
+
+nb_execution_mode = "off"
+# Tell Sphinx that .ipynb files are source files
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".ipynb": "myst-nb",
+    ".myst": "myst-nb",
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -90,7 +99,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "amlro"
-copyright = "2024, zachcran"
+copyright = "2026, dulithaprasanna"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -247,7 +256,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "amlro Documentation", "zachcran", "manual")
+    (
+        "index",
+        "user_guide.tex",
+        "amlro Documentation",
+        "dulithaprasanna",
+        "manual",
+    )
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
