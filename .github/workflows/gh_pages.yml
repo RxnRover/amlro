@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.13"]  # use 3.11 to match amlro python_requires
+        python-version: ["3.11"]  # use 3.11 to match amlro python_requires
 
     steps:
       - name: Checkout repository
