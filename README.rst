@@ -38,7 +38,7 @@ This is the documentation of **amlro**.
 Active Machine Learning Reaction Optimizer (AMLRO) for data-efficient reaction
 process condition discovery and optimization.
 
-.. image:: doc/source/_static/AMLRO.jpg
+.. image:: https://raw.githubusercontent.com/RxnRover/amlro/doc/docs/source/_static/amlro_workflow.png
     :width: 80%
     :align: center
     :alt: AMLRO overview
