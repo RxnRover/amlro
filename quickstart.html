@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart &mdash; amlro 0.0.post1.dev1+g6cd09b064 documentation</title>
+  <title>Quickstart &mdash; amlro 0.0.post1.dev1+gfde7ac0c9 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=226aa7ca"></script>
+      <script src="_static/documentation_options.js?v=93d1ad1d"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
@@ -110,20 +110,26 @@ steps, experimental or computational feedback must be provided by the user.</p>
 <section id="step-1-define-the-configuration-dictionary">
 <h2>Step 1: Define the Configuration Dictionary<a class="headerlink" href="#step-1-define-the-configuration-dictionary" title="Link to this heading"></a></h2>
 <p>AMLRO is configured using a single dictionary that defines reaction parameters,
-objectives, sampling strategy, and model settings.</p>
+objectives.</p>
+<p>The configuration dictionary specifies:</p>
+<ul class="simple">
+<li><p>Continuous reaction parameters (bounds, resolution, names)</p></li>
+<li><p>Categorical reaction parameters (explicit value lists)</p></li>
+<li><p>Optimization objectives and directions</p></li>
+</ul>
+<p>A minimal configuration dictionary <strong>must contain all required keys</strong>, even if
+some sections (e.g., categorical variables) are empty.</p>
+<p>The following example shows the <strong>required structure only</strong>. Values are
+placeholders and should be replaced by user-defined settings.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;continuous&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;bounds&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">]],</span>
-        <span class="s2">&quot;step_sizes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="s2">&quot;bounds&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;resolutions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">step_size</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;feature_1&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
     <span class="p">},</span>
-    <span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;solvent&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;THF&quot;</span><span class="p">,</span> <span class="s2">&quot;MeCN&quot;</span><span class="p">,</span> <span class="s2">&quot;DMF&quot;</span><span class="p">]</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;objectives&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;yield&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;random_forest&quot;</span>
+    <span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[]},</span>
+    <span class="s2">&quot;objectives&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;objective_1&quot;</span><span class="p">,</span> <span class="s2">&quot;objective_2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">&quot;directions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
 <span class="p">}</span>
 </pre></div>
 </div>

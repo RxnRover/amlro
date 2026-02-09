@@ -29,24 +29,32 @@ Step 1: Define the Configuration Dictionary
 -------------------------------------------
 
 AMLRO is configured using a single dictionary that defines reaction parameters,
-objectives, sampling strategy, and model settings.
+objectives.
+
+The configuration dictionary specifies:
+
+- Continuous reaction parameters (bounds, resolution, names)
+- Categorical reaction parameters (explicit value lists)
+- Optimization objectives and directions
+
+A minimal configuration dictionary **must contain all required keys**, even if
+some sections (e.g., categorical variables) are empty.
+
+The following example shows the **required structure only**. Values are
+placeholders and should be replaced by user-defined settings.
 
 .. code-block:: python
 
-   config = {
-       "continuous": {
-           "feature_names": ["temperature", "time"],
-           "bounds": [[20, 80], [1, 10]],
-           "step_sizes": [5, 1]
-       },
-       "categorical": {
-           "solvent": ["THF", "MeCN", "DMF"]
-       },
-       "objectives": {
-           "yield": "max"
-       },
-       "model": "random_forest"
-   }
+    config = {
+        "continuous": {
+            "bounds": [[min_value, max_value], ...],
+            "resolutions": [step_size, ...],
+            "feature_names": ["feature_1", "feature_2", ...],
+        },
+        "categorical": {"feature_names": [], "values": []},
+        "objectives": ["objective_1", "objective_2", ...],
+        "directions": ["max", "min", ...],
+    }
 
 An experiment directory is used to store all intermediate files:
 
