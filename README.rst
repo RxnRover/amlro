@@ -30,6 +30,9 @@
 
 |
 
+.. image:: https://img.shields.io/badge/DOI-10.11578/dc.20260205.1-blue
+   :target: https://doi.org/10.11578/dc.20260205.1
+
 AMLRO
 =====
 
@@ -63,6 +66,34 @@ Click the badge below to open AMLRO Interactive notebook in **Google Colab**:
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
     :alt: open in colab
     :target: https://colab.research.google.com/github/RxnRover/amlro/blob/main/notebooks/AMLRO_interactive_colab.ipynb
+
+
+Citation
+--------
+
+If you use AMLRO in your research, please cite:
+
+Kulathunga, D. P. et al.
+*RxnRover/amlro*.
+Computer Software.
+USDOE Office of Energy Efficiency and Renewable Energy (EERE),
+Advanced Materials & Manufacturing Technologies Office (AMMTO), 2026.
+DOI: https://doi.org/10.11578/dc.20260205.1
+
+BibTeX:
+
+.. code-block:: bibtex
+
+   @misc{doecode_174798,
+     title        = {RxnRover/amlro},
+     author       = {Kulathunga, Dulitha Prasanna and Crandall, Zachery},
+     abstractNote = {AMLRO (Active Machine Learning Reaction Optimizer)...},
+     doi          = {10.11578/dc.20260205.1},
+     url          = {https://doi.org/10.11578/dc.20260205.1},
+     howpublished = {[Computer Software] \url{https://doi.org/10.11578/dc.20260205.1}},
+     year         = {2026},
+     month        = {feb}
+   }
 
 .. _pyscaffold-notes:
 

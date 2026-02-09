@@ -28,6 +28,18 @@ AMLRO follows a three-step workflow:
     :align: center
     :alt: AMLRO workflow overview
 
+How to Cite AMLRO
+-----------------
+
+If you use AMLRO in academic research, please cite:
+
+Kulathunga, D. P.; Crandall, Z.
+*RxnRover/amlro*.
+Computer Software.
+USDOE Office of Energy Efficiency and Renewable Energy (EERE),
+Advanced Materials & Manufacturing Technologies Office (AMMTO), 2026.
+DOI: https://doi.org/10.11578/dc.20260205.1
+
 Key Features
 ------------
 
