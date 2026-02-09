@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: AMLRO (Active Machine Learning Reaction Optimizer)
+message: "If you use AMLRO in your research, please cite it using the DOI below."
+authors:
+  - family-names: Kulathunga
+    given-names: Dulitha Prasanna
+  - family-names: Crandall
+    given-names: Zachery
+version: 0.1.0
+date-released: 2026-02-04
+doi: 10.11578/dc.20260205.1
+url: https://github.com/RxnRover/amlro
+license: MIT
