@@ -33,6 +33,10 @@
 .. image:: https://img.shields.io/badge/DOI-10.11578/dc.20260205.1-blue
    :target: https://doi.org/10.11578/dc.20260205.1
 
+.. image:: https://readthedocs.org/projects/amlro/badge/?version=latest
+   :target: https://rxnrover.github.io/amlro/
+   :alt: Documentation Status
+
 AMLRO
 =====
 
@@ -60,6 +64,9 @@ AMLRO follows a three-step workflow:
 1. Reaction space generation
 2. Training set generation with experimental feedback
 3. Active learning-loop -> prediction of optimal reaction conditions.
+
+For tutorials and interactive notebooks, see the documentation.
+📘 `Documentation <https://rxnrover.github.io/amlro/>`_
 
 Click the badge below to open AMLRO Interactive notebook in **Google Colab**:
 
@@ -95,32 +102,21 @@ BibTeX:
      month        = {feb}
    }
 
-.. _pyscaffold-notes:
 
-Making Changes & Contributing
------------------------------
+Quick Installation
+------------------
 
-This project uses pre-commit_, please make sure to install it before making any
-changes:
+Create a virtual environment (recommended):
 
-::
+.. code-block:: bash
 
-    pip install pre-commit
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+Clone and install:
+
+.. code-block:: bash
+
+    git clone https://github.com/RxnRover/amlro.git
     cd amlro
-    pre-commit install
-
-It is a good idea to update the hooks to the latest version:
-
-::
-
-    pre-commit autoupdate
-
-Don't forget to tell your contributors to also install and use pre-commit.
-
-.. _pre-commit: https://pre-commit.com/
-
-Note
-----
-
-This project has been set up using PyScaffold 4.5. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+    pip install -e .

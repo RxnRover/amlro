@@ -22,6 +22,35 @@
    also include, like mentioning labels of your issue tracker or automated
    releases.
 
+.. _pyscaffold-notes:
+
+Making Changes & Contributing
+-----------------------------
+
+This project uses pre-commit_, please make sure to install it before making any
+changes:
+
+::
+
+    pip install pre-commit
+    cd amlro
+    pre-commit install
+
+It is a good idea to update the hooks to the latest version:
+
+::
+
+    pre-commit autoupdate
+
+Don't forget to tell your contributors to also install and use pre-commit.
+
+.. _pre-commit: https://pre-commit.com/
+
+Note
+----
+
+This project has been set up using PyScaffold 4.5. For details and usage
+information on PyScaffold see https://pyscaffold.org/.
 
 ============
 Contributing
